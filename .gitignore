@@ -1,0 +1,58 @@
+## Build results
+bin/
+obj/
+out/
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## VS Code / Visual Studio config
+.vscode/
+.vs/
+
+## ASP.NET Core files
+wwwroot/lib/
+wwwroot/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## Logs
+*.log
+*.tlog
+
+## Package management
+*.nupkg
+*.snupkg
+packages/
+*.tmp
+*.cache
+
+## OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+## Others
+*.dbmdl
+*.bak
+*.psess
+*.vspx
+*.pdb
+
+# JetBrains Rider
+.idea/
+
+# LocalDB database files
+*.mdf
+*.ldf
+
+# EF Core Migrations snapshot backups
+Migrations/*.Designer.cs
+Migrations/*ModelSnapshot.cs
