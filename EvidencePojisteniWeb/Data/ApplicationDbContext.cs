@@ -26,16 +26,24 @@ namespace EvidencePojisteniWeb.Data
                 .HasOne(po => po.Osoba)
                 .WithMany(o => o.PojisteniOsoby)              // Pokud PojistenecModel nemá kolekci PojisteniOsobyModel tak jen .WithMany()
                 .HasForeignKey(po => po.OsobaId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);            // při smazání pojištěnce se smažou i záznamy v PojisteneOsoby
 
             // 1:N mezi PojisteniModel a PojisteniOsobyModel
             builder.Entity<PojisteniOsobyModel>()
                 .HasOne(po => po.Pojisteni)
                 .WithMany(p => p.PojisteniOsoby)              // Pokud PojisteniModel nemá kolekci PojisteniOsobyModel, tak jen .WithMany()
                 .HasForeignKey(po => po.PojisteniId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);           // zabránění kaskádovému smazání (NO ACTION) pro FK PojisteniId
 
             // Enum typy (RoleVuciPojisteni, TypPojisteni) se ukládají jako číselné hodnoty
+
+            builder.Entity<PojisteniModel>()
+                .Property(p => p.Castka)
+                .HasPrecision(18, 2); // Nastavení přesnosti pro decimal (18 číslic celkem, 2 desetinná místa)
+
+            builder.Entity<PojistnaUdalostModel>()
+                .Property(u => u.Skoda)
+                .HasPrecision(18, 2); // Nastavení přesnosti pro decimal (18 číslic celkem, 2 desetinná místa)
         }
     }
 }
