@@ -1,0 +1,65 @@
+﻿@model IEnumerable<EvidencePojisteniWeb.Models.PojisteniModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Pojistenec)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypPojisteni)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PredmetPojisteni)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DatumZacatku)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DatumKonce)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Castka)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pojistenec.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypPojisteni)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PredmetPojisteni)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DatumZacatku)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DatumKonce)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Castka)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

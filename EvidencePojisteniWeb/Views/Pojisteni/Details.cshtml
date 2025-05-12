@@ -1,0 +1,54 @@
+﻿@model EvidencePojisteniWeb.Models.PojisteniModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>PojisteniModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Pojistenec)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Pojistenec.Email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TypPojisteni)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TypPojisteni)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PredmetPojisteni)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PredmetPojisteni)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DatumZacatku)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DatumZacatku)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DatumKonce)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DatumKonce)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Castka)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Castka)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

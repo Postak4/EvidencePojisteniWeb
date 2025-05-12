@@ -1,0 +1,69 @@
+﻿@model EvidencePojisteniWeb.Models.PojistnaUdalostModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>PojistnaUdalostModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PopisUdalosti" class="control-label"></label>
+                <input asp-for="PopisUdalosti" class="form-control" />
+                <span asp-validation-for="PopisUdalosti" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DatumUdalosti" class="control-label"></label>
+                <input asp-for="DatumUdalosti" class="form-control" />
+                <span asp-validation-for="DatumUdalosti" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MistoUdalosti" class="control-label"></label>
+                <input asp-for="MistoUdalosti" class="form-control" />
+                <span asp-validation-for="MistoUdalosti" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Skoda" class="control-label"></label>
+                <input asp-for="Skoda" class="form-control" />
+                <span asp-validation-for="Skoda" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Vyreseno" /> @Html.DisplayNameFor(model => model.Vyreseno)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Svedek" class="control-label"></label>
+                <input asp-for="Svedek" class="form-control" />
+                <span asp-validation-for="Svedek" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdresaSvedka" class="control-label"></label>
+                <input asp-for="AdresaSvedka" class="form-control" />
+                <span asp-validation-for="AdresaSvedka" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Poznamka" class="control-label"></label>
+                <textarea asp-for="Poznamka" class="form-control"></textarea>
+                <span asp-validation-for="Poznamka" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PojisteniId" class="control-label"></label>
+                <select asp-for="PojisteniId" class ="form-control" asp-items="ViewBag.PojisteniId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
