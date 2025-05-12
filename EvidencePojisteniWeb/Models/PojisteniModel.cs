@@ -22,6 +22,9 @@ namespace EvidencePojisteniWeb.Models
         // Navigační vlastnost pro PojistenecModel
         public PojistenecModel? Pojistenec { get; set; }
 
+        // Nová kolekce – všechny záznamy propojení pojistění a osob
+        public ICollection<PojisteniOsobyModel> PojisteniOsoby { get; set; } = new List<PojisteniOsobyModel>();
+
         [Required(ErrorMessage = "Vyberte typ pojištění")]
         [Display(Name = "Typ pojištění")]
         public TypPojisteni? TypPojisteni { get; set; }
