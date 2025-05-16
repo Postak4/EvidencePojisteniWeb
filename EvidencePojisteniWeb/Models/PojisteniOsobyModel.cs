@@ -34,8 +34,8 @@ namespace EvidencePojisteniWeb.Models
         public PojisteniModel? Pojisteni { get; set; }
 
         // Role vůči pojištění (pojistník nebo pojištěný)
-        [Required(ErrorMessage = "Vyberte roli vůči pojištění")]
-        [Display(Name = "Role vůči pojištění [Pojistník/Pojištěný]")]
-        public RoleVuciPojisteni Role { get; set; } 
+        [Required(ErrorMessage = "Vyberte roli")]
+        [Display(Name = "Role vůči pojištění")]
+        public RoleVuciPojisteni? Role { get; set; } 
     }
 }

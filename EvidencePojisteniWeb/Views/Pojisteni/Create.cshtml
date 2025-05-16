@@ -18,7 +18,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="TypPojisteni" class="control-label"></label>
-                <input asp-for="TypPojisteni" class="form-control" />
+                @*Přidání select pro typ pojištění*@
+                <select asp-for="TypPojisteni" class="form-control" asp-items="Html.GetEnumSelectList<TypPojisteni>()"></select>
                 <span asp-validation-for="TypPojisteni" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -1,8 +1,41 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Evidence pojištění";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="container">
+        <header class="pb-2 border-bottom">
+            <h4 href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @ViewData["Title"]
+            </h4>
+        </header>
+
+        <div class="p-4 mb-4 bg-body-tertiary rounded-3">
+            <div class="container-fluid py-4">
+                <h3 class="display-4 fw-bold">EvidencePojisteniWeb.cz</h3>
+
+                <p class="col-md-8 fs-6 fw-bold">Evidence pojištění je síť na, které se můžete bezpečně pojistit proti jakýmkoli
+                událostem. Naše aplikace je zdarma a bez reklam. Stačí se zaregistrovat a můžete si vybrat z našich produktů, které
+                Vám nabízejí širokou škálu možností pojištění, proti nechtěným událostem.</p>
+                
+                <button class="btn btn-success btn-lg" type="button">Vsupte do portálu</button>
+            </div>
+        </div>
+
+        <div class="row align-items-md-stretch">
+            <div class="col-md-6">
+                <div class="h-100 p-4 text-bg-success rounded-3">
+                    <h2>Pojištění</h2>
+                    <p>Stačí kliknout a podívat se v rychlém přehledu jaké možnosti tyto stránky nabízejí.</p>
+                    <button class="btn btn-outline-light" type="button">Podívat se na pojištění</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="h-100 p-4 bg-body-tertiary border rounded-3">
+                    <h2>Přihlášení na naše stránky</h2>
+                    <p>Přihlášení na stránky Evidence pojištění Vás posune blíž k jistějším zítřkům. S námi se můžete cítit ve větším
+                    bezpečí a plně se soustředit na prožívání života.</p>
+                    <button class="btn btn-success" type="button">Přihlásit se</button>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -6,7 +6,7 @@ namespace EvidencePojisteniWeb.Models
     {
         [Display(Name = "Pojistník")]
         Pojistnik,
-        [Display(Name = "Pojištěný")]
+        [Display(Name = "Pojištěná osoba")]
         Pojisteny
     }
 }
