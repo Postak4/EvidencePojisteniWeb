@@ -22,7 +22,14 @@ namespace EvidencePojisteniWeb.Controllers
         // GET: Pojistenec
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Pojistenci.ToListAsync());
+            var pojistenci = await _context.Pojistenci
+                // všechny vyzby PojistenciOsoby
+                .Include(p => p.PojisteniOsoby)
+                // všechny vyzby Pojisteni
+                .ThenInclude(po => po.Pojisteni)
+                .ToListAsync();
+
+            return View(pojistenci);
         }
 
         // GET: Pojistenec/Details/5

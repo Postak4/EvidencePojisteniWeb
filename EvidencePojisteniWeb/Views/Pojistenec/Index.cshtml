@@ -1,83 +1,125 @@
 ﻿@model IEnumerable<EvidencePojisteniWeb.Models.PojistenecModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pojištěnci";
 }
 
-<h1>Index</h1>
+<div class="container">
+    <header class="pb-2 border-bottom">
+        <h4 href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @ViewData["Title"]
+        </h4>
+    </header>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Jmeno)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Prijmeni)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DatumNarozeni)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UliceCpCe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Mesto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PSC)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Telefon)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Jmeno)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Prijmeni)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DatumNarozeni)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UliceCpCe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Mesto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PSC)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefon)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="row text-center mt-4">
+        <div class="col">
+            <a role="button" class="btn btn-primary" asp-action="Create">Nový pojištěnec</a>
+        </div>
+    </div>
+
+    <div class="col mt-4">
+        <table class="table table-responsive table-hover table-bordered">
+            <thead>
+                <tr class="table-primary">
+                    <th>
+                        Jméno a příjmení
+                    </th>
+                    <th>
+                        Pojištění
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DatumNarozeni)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UliceCpCe)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Mesto)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PSC)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Stat)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Telefon)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">
+                                @item.Jmeno @item.Prijmeni
+                            </a>
+                        </td>
+                        <td>
+                            @foreach (var skupina in item.PojisteniOsoby.GroupBy(po => po.Pojisteni))
+                            {
+                                <div>
+                                    @skupina.Key?.TypPojisteni?.ToString() - @skupina.Key?.PredmetPojisteni
+                                    (
+                                    @string.Join("/", skupina.Select(g => g.Role.ToString()))
+                                    )
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DatumNarozeni)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UliceCpCe)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Mesto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PSC)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Stat)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Telefon)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <nav class="" aria-label="Stránkování">
+            <ul class="pagination justify-content-center">
+                <!-- pro větší čí menší .pagination-sm .pagination-lg-->
+                <li class="page-item disabled">
+                    <span aria-hidden="true" class="page-link">Předchozí</span>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">Další</span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

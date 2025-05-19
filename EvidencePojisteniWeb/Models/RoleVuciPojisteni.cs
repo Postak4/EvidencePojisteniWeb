@@ -5,8 +5,8 @@ namespace EvidencePojisteniWeb.Models
     public enum RoleVuciPojisteni
     {
         [Display(Name = "Pojistník")]
-        Pojistnik,
+        Pojistnik = 0,
         [Display(Name = "Pojištěná osoba")]
-        Pojisteny
+        Pojisteny = 1
     }
 }

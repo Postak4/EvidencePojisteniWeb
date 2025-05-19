@@ -17,10 +17,14 @@
 else
 {
     <li class="nav-item ">
-        <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        <a class="nav-link text-light @(ViewContext.RouteData.Values["page"]?.ToString()
+          ==
+        "/Account/Register" ? "active fw-bold" : "")" asp-area="Identity" asp-page="/Account/Register">Register</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="nav-link text-light @(ViewContext.RouteData.Values["page"]?.ToString()
+          ==
+        "/Account/Login" ? "active fw-bold" : "")" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
 }
 </ul>
