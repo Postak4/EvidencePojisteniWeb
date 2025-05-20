@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using EvidencePojisteniWeb.ValidationAttributes;
+
 namespace EvidencePojisteniWeb.Models
 {
     /// <summary>
@@ -36,6 +38,18 @@ namespace EvidencePojisteniWeb.Models
         // Role vůči pojištění (pojistník nebo pojištěný)
         [Required(ErrorMessage = "Vyberte roli")]
         [Display(Name = "Role vůči pojištění")]
-        public RoleVuciPojisteni Role { get; set; } 
+        public RoleVuciPojisteni Role { get; set; }
+
+        [Required(ErrorMessage = "Zadejte datum počátku platnosti")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Platnost od")]
+        [DateNotInPast(ErrorMessage = "Datum platnosti nesmí být v minulosti.")]
+        public DateTime PlatnostOd { get; set; }
+
+        [Required(ErrorMessage = "Zadejte datum konce platnosti")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Platnost do")]
+        [DateGreaterThan("PlatnostOd", ErrorMessage = "Datum konce platnosti musí být po datu začátku.")]
+        public DateTime PlatnostDo { get; set; }
     }
 }

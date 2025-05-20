@@ -47,11 +47,24 @@ namespace EvidencePojisteniWeb.Controllers
         }
 
         // GET: PojisteniOsoby/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int pojistenecId)
         {
-            ViewData["OsobaId"] = new SelectList(_context.Pojistenci, "Id", "Email");
-            ViewData["PojisteniId"] = new SelectList(_context.Pojisteni, "Id", "PredmetPojisteni");
-            return View();
+            var pojistenec = await _context.Pojistenci.FindAsync(pojistenecId);
+            if (pojistenec == null) return NotFound();
+            
+            ViewBag.Pojistenec = pojistenec;
+            ViewBag.TypPojisteni = Enum.GetValues<TypPojisteni>().ToList();
+            ViewBag.Role = Enum.GetValues<RoleVuciPojisteni>().ToList();
+
+            var model = new PojisteniOsobyModel
+            {
+                OsobaId = pojistenecId,
+                PlatnostOd = DateTime.Today,
+                PlatnostDo = DateTime.Today.AddYears(1),
+                Pojisteni = new PojisteniModel()
+            };
+
+            return View(model);
         }
 
         // POST: PojisteniOsoby/Create
@@ -59,17 +72,30 @@ namespace EvidencePojisteniWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,OsobaId,PojisteniId,Role")] PojisteniOsobyModel pojisteniOsobyModel)
+        public async Task<IActionResult> Create(PojisteniOsobyModel model)
         {
-            if (ModelState.IsValid)
+            // Znovu připravit výběry pro případ validace
+            ViewBag.Pojistenec = await _context.Pojistenci.FindAsync(model.OsobaId);
+            ViewBag.TypPojisteni = Enum.GetValues<TypPojisteni>().ToList();
+            ViewBag.Role = Enum.GetValues<RoleVuciPojisteni>().ToList();
+
+            if (!ModelState.IsValid)
             {
-                _context.Add(pojisteniOsobyModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(model);     // návrat na formulář s chybami
             }
-            ViewData["OsobaId"] = new SelectList(_context.Pojistenci, "Id", "Email", pojisteniOsobyModel.OsobaId);
-            ViewData["PojisteniId"] = new SelectList(_context.Pojisteni, "Id", "PredmetPojisteni", pojisteniOsobyModel.PojisteniId);
-            return View(pojisteniOsobyModel);
+
+            // uložení pojištění
+            _context.Pojisteni.Add(model.Pojisteni!);
+            await _context.SaveChangesAsync();
+
+            // vytvoření vazby mezi pojištěncem a pojištěním
+            model.PojisteniId = model.Pojisteni.Id;
+            model.Pojisteni = null; // zrušení vazby na pojištění
+
+            _context.PojisteneOsoby.Add(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "Pojistenec", new { id = model.OsobaId });
         }
 
         // GET: PojisteniOsoby/Edit/5
