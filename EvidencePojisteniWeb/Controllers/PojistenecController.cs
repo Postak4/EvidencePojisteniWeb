@@ -20,16 +20,17 @@ namespace EvidencePojisteniWeb.Controllers
         }
 
         // GET: Pojistenec
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var pojistenci = await _context.Pojistenci
+            int pageSize = 3; // Počet záznamů na stránku
+            var pojistenci = _context.Pojistenci
                 // všechny vyzby PojistenciOsoby
                 .Include(p => p.PojisteniOsoby)
                 // všechny vyzby Pojisteni
                 .ThenInclude(po => po.Pojisteni)
-                .ToListAsync();
+                .AsNoTracking();
 
-            return View(pojistenci);
+            return View(await PaginatedList<PojistenecModel>.CreateAsync(pojistenci, pageNumber ?? 1, pageSize));
         }
 
         // GET: Pojistenec/Details/5
@@ -41,7 +42,10 @@ namespace EvidencePojisteniWeb.Controllers
             }
 
             var pojistenecModel = await _context.Pojistenci
+                .Include(p => p.PojisteniOsoby)
+                .ThenInclude(po => po.Pojisteni)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            
             if (pojistenecModel == null)
             {
                 return NotFound();

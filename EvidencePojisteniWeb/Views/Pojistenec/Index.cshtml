@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EvidencePojisteniWeb.Models.PojistenecModel>
+﻿@model EvidencePojisteniWeb.Models.PaginatedList<EvidencePojisteniWeb.Models.PojistenecModel>
 
 @{
     ViewData["Title"] = "Pojištěnci";
@@ -19,38 +19,23 @@
 
     <div class="col mt-4">
         <table class="table table-responsive table-hover table-bordered">
-            <thead>
-                <tr class="table-primary">
-                    <th>
-                        Jméno a příjmení
-                    </th>
-                    <th>
-                        Pojištění
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DatumNarozeni)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.UliceCpCe)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Mesto)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PSC)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Stat)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Telefon)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Email)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
+            @if (Model.Count > 0)
+            {
+                <thead>
+                    <tr class="table-primary">
+                        <th>@Html.DisplayNameFor(model => model[0].Jmeno)</th>
+                        <th>Pojištění</th>
+                        <th>@Html.DisplayNameFor(model => model[0].DatumNarozeni)</th>
+                        <th>@Html.DisplayNameFor(model => model[0].UliceCpCe)</th>
+                        <th>@Html.DisplayNameFor(model => model[0].Mesto)</th>
+                        <th>@Html.DisplayNameFor(model => model[0].PSC)</th>
+                        <th>@Html.DisplayNameFor(model => model[0].Stat)</th>
+                        <th>@Html.DisplayNameFor(model => model[0].Telefon)</th>
+                        <th>@Html.DisplayNameFor(model => model[0].Email)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            }
             <tbody class="">
                 @foreach (var item in Model)
                 {
@@ -61,14 +46,21 @@
                             </a>
                         </td>
                         <td>
-                            @foreach (var skupina in item.PojisteniOsoby.GroupBy(po => po.Pojisteni))
+                            @if(item.PojisteniOsoby != null && item.PojisteniOsoby.Any())
                             {
-                                <div>
-                                    @skupina.Key?.TypPojisteni?.ToString() - @skupina.Key?.PredmetPojisteni
-                                    (
-                                    @string.Join("/", skupina.Select(g => g.Role.ToString()))
-                                    )
-                                </div>
+                                @foreach (var skupina in item.PojisteniOsoby
+                                                                   .Where(po => po.Pojisteni != null)
+                                                                   .GroupBy(PojistenecModel => PojistenecModel.Pojisteni))
+                                {
+                                    <div class="mb-1">
+                                        <strong>@skupina.Key?.TypPojisteni</strong><br />
+                                        (@string.Join("/", skupina.Select(g => g.Role.ToString())))
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">Bez pojištění</span>
                             }
                         </td>
                         <td>
@@ -93,9 +85,8 @@
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            <a role="button" class="btn btn-warning m-1" asp-action="Edit" asp-route-id="@item.Id">Editovat</a>
+                            <a role="button" class="btn btn-danger m-1" asp-action="Delete" asp-route-id="@item.Id">Odstranit</a>
                         </td>
                     </tr>
                 }
@@ -107,17 +98,19 @@
         <nav class="" aria-label="Stránkování">
             <ul class="pagination justify-content-center">
                 <!-- pro větší čí menší .pagination-sm .pagination-lg-->
-                <li class="page-item disabled">
-                    <span aria-hidden="true" class="page-link">Předchozí</span>
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">Předchozí</a>
                 </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">Další</span>
-                        <span class="visually-hidden">Next</span>
-                    </a>
+
+                @for(int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">Další</a>
                 </li>
             </ul>
         </nav>

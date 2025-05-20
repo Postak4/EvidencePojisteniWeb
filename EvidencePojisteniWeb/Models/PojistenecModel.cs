@@ -38,7 +38,7 @@ namespace EvidencePojisteniWeb.Models
 
         [Required(ErrorMessage = "Adresa je povinná")]
         [StringLength(50, ErrorMessage = "{0} musí mít alespoň {2} znaků a nejvíce {1}", MinimumLength = 4)]
-        [Display(Name = "Ulice a číslo popisné/číslo evidenční")]
+        [Display(Name = "Ulice a číslo č.p./č.ev.")]
         public string UliceCpCe { get; set; } = "";
 
         [Required(ErrorMessage = "Vyplňte město")]
