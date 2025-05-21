@@ -14,11 +14,6 @@ namespace EvidencePojisteniWeb.Models
         [Key]
         public int Id { get; set; }
 
-        // Cizí klíč pro PojistenecModel
-        [Required]
-        [Display(Name = "Pojištěnec")]
-        public int PojistenecId { get; set; }
-
         // Navigační vlastnost pro PojistenecModel
         public PojistenecModel? Pojistenec { get; set; }
 

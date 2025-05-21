@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EvidencePojisteniWeb.Data;
 using EvidencePojisteniWeb.Models;
@@ -22,8 +21,9 @@ namespace EvidencePojisteniWeb.Controllers
         // GET: Pojisteni
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Pojisteni.Include(p => p.Pojistenec);
-            return View(await applicationDbContext.ToListAsync());
+            // Už nebudeme includovat Pojistenec, protože model to nemá
+            var pojisteniList = await _context.Pojisteni.ToListAsync();
+            return View(pojisteniList);
         }
 
         // GET: Pojisteni/Details/5
@@ -35,7 +35,6 @@ namespace EvidencePojisteniWeb.Controllers
             }
 
             var pojisteniModel = await _context.Pojisteni
-                .Include(p => p.Pojistenec)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (pojisteniModel == null)
             {
@@ -48,16 +47,14 @@ namespace EvidencePojisteniWeb.Controllers
         // GET: Pojisteni/Create
         public IActionResult Create()
         {
-            ViewData["PojistenecId"] = new SelectList(_context.Pojistenci, "Id", "Email");
+            // Už žádné ViewData["PojistenecId"]
             return View();
         }
 
         // POST: Pojisteni/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PojistenecId,TypPojisteni,PredmetPojisteni,DatumZacatku,DatumKonce,Castka")] PojisteniModel pojisteniModel)
+        public async Task<IActionResult> Create([Bind("Id,TypPojisteni,PredmetPojisteni,Castka")] PojisteniModel pojisteniModel)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +62,6 @@ namespace EvidencePojisteniWeb.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PojistenecId"] = new SelectList(_context.Pojistenci, "Id", "Email", pojisteniModel.PojistenecId);
             return View(pojisteniModel);
         }
 
@@ -82,16 +78,13 @@ namespace EvidencePojisteniWeb.Controllers
             {
                 return NotFound();
             }
-            ViewData["PojistenecId"] = new SelectList(_context.Pojistenci, "Id", "Email", pojisteniModel.PojistenecId);
             return View(pojisteniModel);
         }
 
         // POST: Pojisteni/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PojistenecId,TypPojisteni,PredmetPojisteni,DatumZacatku,DatumKonce,Castka")] PojisteniModel pojisteniModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TypPojisteni,PredmetPojisteni,Castka")] PojisteniModel pojisteniModel)
         {
             if (id != pojisteniModel.Id)
             {
@@ -118,7 +111,6 @@ namespace EvidencePojisteniWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PojistenecId"] = new SelectList(_context.Pojistenci, "Id", "Email", pojisteniModel.PojistenecId);
             return View(pojisteniModel);
         }
 
@@ -131,7 +123,6 @@ namespace EvidencePojisteniWeb.Controllers
             }
 
             var pojisteniModel = await _context.Pojisteni
-                .Include(p => p.Pojistenec)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (pojisteniModel == null)
             {

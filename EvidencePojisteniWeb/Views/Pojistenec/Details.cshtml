@@ -50,7 +50,7 @@
                 {
                     <tr>
                         <td>@vztah.Pojisteni?.TypPojisteni</td>
-                        <td>@vztah.Pojisteni?.Castka.ToString("N0") + " Kč"</td>
+                        <td>@vztah.Pojisteni?.Castka.ToString("N0") Kč</td>
                         <td>
                             <a asp-controller="PojisteniOsoby" asp-action="Edit" asp-route-id="@vztah.Id"
                                 class="btn btn-sm btn-warning">Editovat</a>
