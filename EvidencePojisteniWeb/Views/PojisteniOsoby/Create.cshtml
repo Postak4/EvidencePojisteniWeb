@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Nové pojištění";
     var pojistenec = ViewBag.Pojistenec as PojistenecModel;
-    var typy = ViewBag.TypPojisteni as List<TypPojisteni>;
-    var role = ViewBag.Role as List<RoleVuciPojisteni>;
 }
 
 <div class="container">
@@ -15,6 +13,8 @@
     </header>
 
     <div class="container mt-4 text-white bg-success p-4 rounded-3">
+        @*Vložení validace ValidationSummary*@ 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <form asp-action="Create">
             @Html.AntiForgeryToken()
 
@@ -28,23 +28,13 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="Pojisteni.TypPojisteni" class="form-label"></label>
-                    <select asp-for="Pojisteni.TypPojisteni" class="form-select">
-                        @foreach (var typ in typy!)
-                        {
-                            <option value="@typ">@typ</option>
-                        }
-                    </select>
+                    <select asp-for="Pojisteni.TypPojisteni" class="form-select" asp-items="ViewBag.TypPojisteni"></select>
                     <span asp-validation-for="Pojisteni.TypPojisteni" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label asp-for="Role" class="form-label"></label>
-                    <select asp-for="Role" class="form-select">
-                        @foreach (var r in role!)
-                        {
-                            <option value="@r">@r</option>
-                        }
-                    </select>
+                    <select asp-for="Role" class="form-select" asp-items="ViewBag.Role"></select>
                     <span asp-validation-for="Role" class="text-danger"></span>
                 </div>
             </div>
@@ -78,7 +68,7 @@
             </div>
 
             <div class="mt-4 text-center">
-                <input type="submit" value="Uložit pojištění" class="btn btn-outline-light" />
+                <button type="submit" value="Uložit pojištění" class="btn btn-outline-light">Uložit pojištění</button>
             </div>
         </form>
     </div>

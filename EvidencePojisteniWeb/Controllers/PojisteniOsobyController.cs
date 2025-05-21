@@ -51,10 +51,12 @@ namespace EvidencePojisteniWeb.Controllers
         {
             var pojistenec = await _context.Pojistenci.FindAsync(pojistenecId);
             if (pojistenec == null) return NotFound();
-            
+
+            // Správně: SelectList pro enumy (pro správný binding ve view)
             ViewBag.Pojistenec = pojistenec;
-            ViewBag.TypPojisteni = Enum.GetValues<TypPojisteni>().ToList();
-            ViewBag.Role = Enum.GetValues<RoleVuciPojisteni>().ToList();
+            ViewBag.TypPojisteni = new SelectList(Enum.GetValues<TypPojisteni>());
+            ViewBag.Role = new SelectList(Enum.GetValues<RoleVuciPojisteni>());
+
 
             var model = new PojisteniOsobyModel
             {
@@ -68,35 +70,40 @@ namespace EvidencePojisteniWeb.Controllers
         }
 
         // POST: PojisteniOsoby/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PojisteniOsobyModel model)
         {
-            // Znovu připravit výběry pro případ validace
+            // Always prepare select lists for validation errors
             ViewBag.Pojistenec = await _context.Pojistenci.FindAsync(model.OsobaId);
-            ViewBag.TypPojisteni = Enum.GetValues<TypPojisteni>().ToList();
-            ViewBag.Role = Enum.GetValues<RoleVuciPojisteni>().ToList();
+            ViewBag.TypPojisteni = new SelectList(Enum.GetValues<TypPojisteni>());
+            ViewBag.Role = new SelectList(Enum.GetValues<RoleVuciPojisteni>());
+
+
+            // Ensure nested object is not null (edge-case, almost redundant if view is OK)
+            if (model.Pojisteni == null)
+                model.Pojisteni = new PojisteniModel();
 
             if (!ModelState.IsValid)
             {
-                return View(model);     // návrat na formulář s chybami
+                // Return view with filled data and validation summary
+                return View(model);
             }
 
-            // uložení pojištění
+            // Save new insurance
             _context.Pojisteni.Add(model.Pojisteni!);
             await _context.SaveChangesAsync();
 
-            // vytvoření vazby mezi pojištěncem a pojištěním
+            // Link to person
             model.PojisteniId = model.Pojisteni.Id;
-            model.Pojisteni = null; // zrušení vazby na pojištění
+            model.Pojisteni = null; // avoid circular reference
 
             _context.PojisteneOsoby.Add(model);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", "Pojistenec", new { id = model.OsobaId });
         }
+
 
         // GET: PojisteniOsoby/Edit/5
         public async Task<IActionResult> Edit(int? id)
