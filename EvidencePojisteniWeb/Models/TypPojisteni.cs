@@ -14,7 +14,7 @@ namespace EvidencePojisteniWeb.Models
         [Display(Name = "Cestovní pojištění")]
         Cestovni = 3,
         [Display(Name = "Pojištění domácnosti")]
-        Domacnost = 4,
+        Majetkove = 4,
         [Display(Name = "Pojištění odpovědnosti za škodu")]
         Odpovednost = 5
     }
