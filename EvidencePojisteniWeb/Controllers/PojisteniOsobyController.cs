@@ -113,13 +113,20 @@ namespace EvidencePojisteniWeb.Controllers
                 return NotFound();
             }
 
-            var pojisteniOsobyModel = await _context.PojisteneOsoby.FindAsync(id);
+            var pojisteniOsobyModel = await _context.PojisteneOsoby
+                .Include(p => p.Pojisteni)
+                .Include(p => p.Osoba)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (pojisteniOsobyModel == null)
             {
                 return NotFound();
             }
-            ViewData["OsobaId"] = new SelectList(_context.Pojistenci, "Id", "Email", pojisteniOsobyModel.OsobaId);
-            ViewData["PojisteniId"] = new SelectList(_context.Pojisteni, "Id", "PredmetPojisteni", pojisteniOsobyModel.PojisteniId);
+
+            ViewBag.Pojistenec = pojisteniOsobyModel.Osoba;
+            ViewBag.TypPojisteni = new SelectList(Enum.GetValues<TypPojisteni>());
+            ViewBag.Role = new SelectList(Enum.GetValues<RoleVuciPojisteni>());
+
             return View(pojisteniOsobyModel);
         }
 
@@ -135,29 +142,33 @@ namespace EvidencePojisteniWeb.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(pojisteniOsobyModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PojisteniOsobyModelExists(pojisteniOsobyModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ViewBag.Pojistenec = await _context.Pojistenci.FindAsync(pojisteniOsobyModel.OsobaId);
+                ViewBag.TypPojisteni = new SelectList(Enum.GetValues<TypPojisteni>());
+                ViewBag.Role = new SelectList(Enum.GetValues<RoleVuciPojisteni>());
+
+                return View(pojisteniOsobyModel);
             }
-            ViewData["OsobaId"] = new SelectList(_context.Pojistenci, "Id", "Email", pojisteniOsobyModel.OsobaId);
-            ViewData["PojisteniId"] = new SelectList(_context.Pojisteni, "Id", "PredmetPojisteni", pojisteniOsobyModel.PojisteniId);
-            return View(pojisteniOsobyModel);
+
+            try
+            {
+                _context.Update(pojisteniOsobyModel);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PojisteniOsobyModelExists(pojisteniOsobyModel.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction("Details", "Pojistenec", new { id = pojisteniOsobyModel.OsobaId });
         }
 
         // GET: PojisteniOsoby/Delete/5

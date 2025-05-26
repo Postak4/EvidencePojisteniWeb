@@ -1,41 +1,88 @@
 ﻿@model EvidencePojisteniWeb.Models.PojisteniOsobyModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editace pojištění";
+    var pojistenec = ViewBag.Pojistenec as PojistenecModel;
 }
 
-<h1>Edit</h1>
+<div class="container">
+    <header class="pb-2 border-bottom">
+        <h4 class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @ViewData["Title"] pro &nbsp;<strong>@pojistenec?.Jmeno @pojistenec?.Prijmeni</strong>
+        </h4>
+    </header>
 
-<h4>PojisteniOsobyModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    <div class="container mt-4 text-white bg-success p-4 rounded-3">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.AntiForgeryToken()
+
+            @* Skrytá pole *@
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="OsobaId" class="control-label"></label>
-                <select asp-for="OsobaId" class="form-control" asp-items="ViewBag.OsobaId"></select>
-                <span asp-validation-for="OsobaId" class="text-danger"></span>
+            <input type="hidden" asp-for="OsobaId" />
+            <input type="hidden" asp-for="Pojisteni.Id" />
+
+            <div class="mb-2">
+                <label class="form-label">E-mail</label>
+                <input class="form-control" value="@pojistenec?.Email" readonly />
             </div>
-            <div class="form-group">
-                <label asp-for="PojisteniId" class="control-label"></label>
-                <select asp-for="PojisteniId" class="form-control" asp-items="ViewBag.PojisteniId"></select>
-                <span asp-validation-for="PojisteniId" class="text-danger"></span>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label asp-for="Pojisteni.TypPojisteni" class="form-label"></label>
+                    <select asp-for="Pojisteni.TypPojisteni" class="form-select" asp-items="ViewBag.TypPojisteni"></select>
+                    <span asp-validation-for="Pojisteni.TypPojisteni" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <label asp-for="Role" class="form-label"></label>
+                    <select asp-for="Role" class="form-select" asp-items="ViewBag.Role"></select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <select asp-for="Role" class="form-control"></select>
-                <span asp-validation-for="Role" class="text-danger"></span>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label asp-for="Pojisteni.PredmetPojisteni" class="form-label"></label>
+                    <input asp-for="Pojisteni.PredmetPojisteni" class="form-control" />
+                    <span asp-validation-for="Pojisteni.PredmetPojisteni" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <label asp-for="Pojisteni.Castka" class="form-label"></label>
+                    <input asp-for="Pojisteni.Castka" class="form-control" />
+                    <span asp-validation-for="Pojisteni.Castka" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label asp-for="PlatnostOd" class="form-label"></label>
+                    <input asp-for="PlatnostOd" type="date" class="form-control" />
+                    <span asp-validation-for="PlatnostOd" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <label asp-for="PlatnostDo" class="form-label"></label>
+                    <input asp-for="PlatnostDo" type="date" class="form-control" />
+                    <span asp-validation-for="PlatnostDo" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <button type="submit" class="btn btn-lg btn-outline-light border-1">Uložit změny</button>
             </div>
         </form>
     </div>
+
+    <div class="mt-5">
+        <a class="btn btn-outline-secondary" asp-controller="Pojistenec" asp-action="Details" asp-route-id="@Model.OsobaId">Zpět na přehled</a>
+    </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

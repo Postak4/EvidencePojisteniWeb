@@ -1,47 +1,48 @@
 ﻿@model IEnumerable<EvidencePojisteniWeb.Models.PojisteniOsobyModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Přehled přiřazených pojištění";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <header class="pb-2 border-bottom">
+        <h4 class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @ViewData["Title"]
+        </h4>
+    </header>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Osoba)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pojisteni)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Osoba.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pojisteni.PredmetPojisteni)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <table class="table table-bordered table-striped mt-4">
+        <thead class="table-success">
+            <tr>
+                <th>Jméno pojištěnce</th>
+                <th>E-mail</th>
+                <th>Typ pojištění</th>
+                <th>Předmět</th>
+                <th>Částka</th>
+                <th>Platnost</th>
+                <th>Role</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Osoba?.Jmeno @item.Osoba?.Prijmeni</td>
+                    <td>@item.Osoba?.Email</td>
+                    <td>@item.Pojisteni?.TypPojisteni</td>
+                    <td>@item.Pojisteni?.PredmetPojisteni</td>
+                    <td>@item.Pojisteni?.Castka.ToString("C")</td>
+                    <td>@item.PlatnostOd.ToShortDateString() - @item.PlatnostDo.ToShortDateString()</td>
+                    <td>@item.Role</td>
+                    <td>
+                        <a role="button" class="btn btn-secondary m-1" asp-action="Details" asp-route-id="@item.Id">Detail</a>
+                        <a role="button" class="btn btn-warning m-1" asp-action="Edit" asp-route-id="@item.Id">Editovat</a>
+                        <a role="button" class="btn btn-danger m-1" asp-action="Delete" asp-route-id="@item.Id">Odstranit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

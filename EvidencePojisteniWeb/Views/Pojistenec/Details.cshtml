@@ -15,7 +15,10 @@
         <div class="row border-bottom pb-4">
             <div class="col-md-3 text-center">
                 <!-- Obrázek nebo placeholder -->
-                <img src="https://via.placeholder.com/150" class="img-thumbnail" alt="Foto pojištěnce" />
+                <picture>
+                    <source srcset="~/images/depositphotos.webp" type="image/webp" />
+                    <img src="~/images/depositphotos.jpg" class="img-fluid img-thumbnail d-block" alt="Foto pojištěnce" style="width: 150px" />
+                </picture>
             </div>
 
             <div class="col-md-4">
@@ -74,6 +77,6 @@
     </div>
 
     <div class="mt-5">
-        <a asp-action="Index">Back to List</a>
+        <a class="btn btn-outline-secondary" asp-action="Index">Zpět na přehled</a>
     </div>
 </div>
