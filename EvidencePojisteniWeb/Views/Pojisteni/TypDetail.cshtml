@@ -1,0 +1,66 @@
+﻿@model EvidencePojisteniWeb.Models.ViewModels.TypPojisteniCardViewModel
+@using EvidencePojisteniWeb.Models.ViewModels;
+
+@{
+    ViewData["Title"] = Model.Nazev;
+    var pocet = ViewBag.Pocet as int? ?? 0;
+
+    var bcItems = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem { Text = "Domů", Controller = "Home", Action = "Index" },
+        new BreadcrumbItem { Text = "Typy pojištění", Controller = "Pojisteni", Action = "Index" },
+        new BreadcrumbItem { Text = Model.Nazev, IsActive = true }
+    };
+}
+
+<!-- Breadcrumb -->
+@await Html.PartialAsync("_Breadcrumb", bcItems)
+
+<div class="container mt-4">
+    <header class="pb-2 mb-4 border-bottom">
+        <h3 class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @Model.Nazev
+        </h3>
+    </header>
+
+
+    <div class="row align-items-center">
+        <!-- Obrázek vlevo -->
+        <div class="col-md-4">
+            <img src="@Model.ObrazekUrl" class="img-fluid rounded shadow-sm mb-1" 
+                style="width: 400px" alt="@Model.Nazev" />
+        </div>
+
+        <!-- Popis vpravo -->
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h3 class="me-3">
+                    @Model.Nazev
+                    <span class="badge bg-success fs-6">@pocet sjednaných</span>
+                </h3>
+
+                <a href="/Account/Login" class="btn btn-outline-primary">
+                    Registrovat / Přihlásit
+                </a>
+            </div>
+
+            <p class="fs-5">@Model.Popis</p>
+
+            <!-- Přidaný delší popis -->
+            @if (!string.IsNullOrEmpty(Model.DlouhyPopis))
+            {
+                <div class="mt-4">
+                    <h5 class="text-muted">Další informace</h5>
+                    <p class="text-body">@Html.Raw(Model.DlouhyPopis)</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Tlačítko zpět -->
+    <div class="mt-5 mb-2">
+        <a asp-controller="Pojisteni" asp-action="Index" class="btn btn-outline-secondary">
+            Zpět na přehled
+        </a>
+    </div>
+</div>

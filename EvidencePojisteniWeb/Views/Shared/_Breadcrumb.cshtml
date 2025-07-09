@@ -1,0 +1,27 @@
+﻿
+@model IEnumerable<EvidencePojisteniWeb.Models.ViewModels.BreadcrumbItem>
+
+@* Zavedení Breadcrumb do view *@
+
+<nav aria-label="breadcrumb" class="pb-2 mb-1">
+  <ol class="breadcrumb bg-white p-0 mb-1">
+    @foreach (var item in Model)
+    {
+        if (item.IsActive)
+        {
+            <li class="breadcrumb-item active" aria-current="page">
+                @item.Text
+            </li>
+        }
+        else
+        {
+            <li class="breadcrumb-item">
+                <a asp-controller="@item.Controller"
+                   asp-action="@item.Action">
+                  @item.Text
+                </a>
+            </li>
+        }
+    }
+  </ol>
+</nav>

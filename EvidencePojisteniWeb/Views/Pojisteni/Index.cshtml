@@ -1,53 +1,45 @@
-﻿@model IEnumerable<EvidencePojisteniWeb.Models.PojisteniModel>
+﻿@model IEnumerable<EvidencePojisteniWeb.Models.ViewModels.TypPojisteniCardViewModel>
+@using EvidencePojisteniWeb.Models.ViewModels
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Typy pojištění";
+
+    //sestavení položek pro Breadcrumb
+    var bcItems = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem { Text = "Domů", Controller = "Home", Action = "Index" },
+        new BreadcrumbItem { Text = "Typy pojištění", IsActive = true }
+    };
 }
 
-<h1>Index</h1>
+@await Html.PartialAsync("_Breadcrumb", bcItems)
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Pojistenec)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TypPojisteni)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PredmetPojisteni)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Castka)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pojistenec.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TypPojisteni)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PredmetPojisteni)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Castka)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container mt-4">
+    <header class="pb-2 border-bottom">
+        <h3 class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            Přehled typů pojištění
+        </h3>
+    </header>
+
+    <div class="row mt-4">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow border-success">
+                    <img src="@item.ObrazekUrl" alt="@item.Nazev" class="card-img-top" 
+                        style="height: 200px; object-fit: cover;" />
+
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Nazev</h5>
+                        <p class="card-text">@item.Popis</p>
+                    </div>
+
+                    <div class="card-footer bg-transparent text-end">
+                        <a asp-action="TypDetail" asp-route-typ="@item.Typ" class="btn btn-sm btn-outline-success">Zobrazit více</a>
+                        @* V budoucnu např.: asp-action="TypDetail" asp-route-typ="@item.Typ" *@
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
