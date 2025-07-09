@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using EvidencePojisteniWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +7,11 @@ namespace EvidencePojisteniWeb
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // 1) Naètení connection stringu z appsettings.json
+            // 1) Naï¿½tenï¿½ connection stringu z appsettings.json
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             // 2) Registrace EF Core DbContextu
@@ -35,17 +36,23 @@ namespace EvidencePojisteniWeb
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            // 4) Inicializace databï¿½ze a seedovï¿½nï¿½ dat
+            using (var scope = app.Services.CreateScope())
             {
-                app.UseMigrationsEndPoint();
+                await DbSeeder.SeedRoleAndAdminAsync(scope.ServiceProvider);
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+
+                // Configure the HTTP request pipeline.
+                if (app.Environment.IsDevelopment())
+                {
+                    app.UseMigrationsEndPoint();
+                }
+                else
+                {
+                    app.UseExceptionHandler("/Home/Error");
+                    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                    app.UseHsts();
+                }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -54,12 +61,12 @@ namespace EvidencePojisteniWeb
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Mapování a routování pro MVC
+            // Mapovï¿½nï¿½ a routovï¿½nï¿½ pro MVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            // Vypnutí Razor Pages s pùvodními statickými soubory
+            // Vypnutï¿½ Razor Pages s pï¿½vodnï¿½mi statickï¿½mi soubory
             app.MapRazorPages();
 
             app.Run();
