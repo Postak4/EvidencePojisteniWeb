@@ -27,7 +27,8 @@ namespace EvidencePojisteniWeb
             // místi AddDefaultIdentity, protože chceme přidat vlastní ApplicationUser
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = true;
+                // pro dočasné testování mohu vypnout otestování hesla bez potvrzení emailu na = false
+                options.SignIn.RequireConfirmedAccount = false;
                 // sem pak případně další nastavení Identity hesla, lockout atd.
             })
             .AddRoles<IdentityRole>()                           // přidá služby RoleManageru a rolí
