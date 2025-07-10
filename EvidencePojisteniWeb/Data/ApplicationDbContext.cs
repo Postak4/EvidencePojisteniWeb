@@ -4,7 +4,7 @@ using EvidencePojisteniWeb.Models;
 
 namespace EvidencePojisteniWeb.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<AplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -46,10 +46,10 @@ namespace EvidencePojisteniWeb.Data
                 .HasPrecision(18, 2);                          // Nastavení přesnosti pro decimal (18 číslic celkem, 2 desetinná místa)
 
             // Mapování pro navigační vlastnosti
-            builder.Entity<AplicationUser>()
+            builder.Entity<ApplicationUser>()
                 .HasOne(u => u.Pojistenec)
                 .WithOne(p => p.User)
-                .HasForeignKey<AplicationUser>(u => u.PojistenecModelId)
+                .HasForeignKey<ApplicationUser>(u => u.PojistenecModelId)
                 .OnDelete(DeleteBehavior.SetNull);              // Při smazání uživatele se neodstraní pojištěnec, ale FK se nastaví na null
         }
     }

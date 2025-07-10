@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using EvidencePojisteniWeb.Models
 
-@inject SignInManager<AplicationUser> SignInManager
-@inject UserManager<AplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))

@@ -70,6 +70,6 @@ namespace EvidencePojisteniWeb.Models
         [Display(Name = "E-mail")]
         public string Email { get; set; } = "";
 
-        public virtual AplicationUser? User { get; set; } // Propojení s uživatelským účtem Identity
+        public virtual ApplicationUser? User { get; set; } // Propojení s uživatelským účtem Identity
     }
 }
