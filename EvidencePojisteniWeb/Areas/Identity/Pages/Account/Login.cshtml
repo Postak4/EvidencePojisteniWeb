@@ -1,0 +1,95 @@
+﻿@page
+@model EvidencePojisteniWeb.Areas.Identity.Pages.Account.LoginModel
+@using EvidencePojisteniWeb.Models.ViewModels
+
+@{
+    ViewData["Title"] = "Přihlášení";
+
+    var bcItems = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem { Text = "Domů", Controller = "Home", Action = "Index" },
+        new BreadcrumbItem { Text = "Přihlášení", IsActive = true }
+    };
+}
+@await Html.PartialAsync("_Breadcrumb", bcItems)
+
+<div class="container">
+    <header class="pb-2 mb-3 border-bottom">
+        <h3 class="text-body-emphasis">@ViewData["Title"]</h3>
+    </header>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="bg-success text-white rounded-3 p-4 my-3">
+                <div class="row justify-content-around align-items-baseline">
+                    <!-- logo a nadpis -->
+                    <div class="col-md-4 text-center mb-4 mb-md-0">
+                        <h4>Přihlásit se do účtu</h4>
+                        <img src="~/images/owl_logo.png" alt="Logo" width="150" height="150" class="img-thumbnail mb-3" />
+                    </div>
+
+                    <!-- formulář -->
+                    <div class="col-md-6">
+                        <form method="post" novalidate>
+                            @* TempData error message *@
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="mb-2">
+                                <label asp-for="Input.Email" class="form-label"></label>
+                                <input asp-for="Input.Email" class="form-control" placeholder="email@domena.cz" />
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                            <div class="mb-2">
+                                <label asp-for="Input.Password" class="form-label"></label>
+                                <input asp-for="Input.Password" type="password" class="form-control" placeholder="Zadejte heslo" />
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input asp-for="Input.RememberMe" class="form-check-input" />
+                                <label asp-for="Input.RememberMe" class="form-check-label"></label>
+                            </div>
+
+                            <div class="text-center mb-3">
+                                <button type="submit" class="btn btn-outline-light px-5">
+                                    Přihlásit se
+                                </button>
+                            </div>
+
+                            @* externí přihlášení, pokud jsou nakonfigurované *@
+                            @if (Model.ExternalLogins?.Count > 0)
+                            {
+                                <hr class="border-light" />
+                                <div class="text-center mb-2">Nebo použijte externí účet:</div>
+                                <div class="d-flex justify-content-center gap-2">
+                                    @foreach (var provider in Model.ExternalLogins)
+                                    {
+                                        <button type="submit" class="btn btn-light" name="provider" value="@provider.Name">
+                                            Přihlásit se @provider.DisplayName
+                                        </button>
+                                    }
+                                </div>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* <div>
+    <p>
+        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+    </p>
+    <p>
+        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+    </p>
+    <p>
+        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+    </p>
+</div> *@
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
