@@ -15,7 +15,7 @@ namespace EvidencePojisteniWeb.Data
         public DbSet<PojistenecModel> Pojistenci { get; set; } = null!;
         public DbSet<PojisteniModel> Pojisteni { get; set; } = null!;
         public DbSet<PojisteniOsobyModel> PojisteneOsoby { get; set; } = null!;
-        public DbSet<PojistnaUdalostModel> PojistneUdalosti { get; set; } = null!;
+        public DbSet<PojistnaUdalostModel> PojistneUdalosti { get; set; } = null!; 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

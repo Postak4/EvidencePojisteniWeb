@@ -1,83 +1,123 @@
-﻿@model IEnumerable<EvidencePojisteniWeb.Models.PojistnaUdalostModel>
+﻿@using EvidencePojisteniWeb.Models.ViewModels
+@using Microsoft.AspNetCore.Identity
+@using EvidencePojisteniWeb.Models
+@model EvidencePojisteniWeb.Models.ViewModels.PojistnaUdalostIndexViewModel
+@inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "Index";
+    var currentPojistenecId = (int?)ViewBag.CurrentPojistenecId;
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PopisUdalosti)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DatumUdalosti)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MistoUdalosti)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Skoda)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Vyreseno)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Svedek)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AdresaSvedka)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Poznamka)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pojisteni)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PopisUdalosti)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DatumUdalosti)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MistoUdalosti)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Skoda)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vyreseno)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Svedek)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AdresaSvedka)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Poznamka)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pojisteni.PredmetPojisteni)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@{
+    ViewData["Title"] = "Události";
+    var bcItems = new List<BreadcrumbItem> {
+        new BreadcrumbItem { Text = "Domů", Controller="Home", Action="Index" },
+        new BreadcrumbItem { Text = "Události", IsActive = true }
+    };
 }
-    </tbody>
-</table>
+@await Html.PartialAsync("_Breadcrumb", bcItems)
+
+<div class="container">
+    <header class="pb-2 border-bottom mb-4">
+        <h3 href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @ViewData["Title"]
+        </h3>
+    </header>
+
+    <!-- Tabulka 1: Statistiky událostí podle typu pojištění -->
+    <h4>Události podle typu pojištění</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Typ pojištění</th>
+                <th>Počet událostí</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.StatsByInsuranceType)
+            {
+                <tr>
+                    <td>@s.TypPojisteni</td>
+                    <td>@s.PocetUdalosti</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Tabulka 2: Počty klientů -->
+    <h4>Počty klientů</h4>
+    <table class="table table-bordered">
+        <tr><th>Celkem klientů</th><td>@Model.Counts.CelkovyPocetKlientu</td></tr>
+        <tr><th>Pojistníci</th><td>@Model.Counts.PocetPojistniku</td></tr>
+        <tr><th>Pojištěnci</th><td>@Model.Counts.PocetPojistencu</td></tr>
+    </table>
+
+    <!-- Tabulka 3: Sumy škod podle typu pojištění -->
+    <h4>Celkové částky škod podle typu pojištění</h4>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Typ pojištění</th>
+                <th>Celková částka škod</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.SumByInsuranceType)
+            {
+                <tr>
+                    <td>@s.TypPojisteni</td>
+                    <td>@s.CelkovaCastka.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Podmíněné akce přihlášeného pojištěnce -->
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Pojistenec"))
+    {
+        <div class="mb-3">
+            <a asp-controller="PojistnaUdalost" asp-action="Create" class="btn btn-success">
+                Vložit novou událost
+            </a>
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-outline-secondary">
+                Můj profil
+            </a>
+        </div>
+    }
+
+    <!-- Seznam událostí -->
+    <h4>Seznam všech událostí</h4>
+    <table class="table table-sm table-striped">
+        <thead>
+            <tr>
+                <th>Popis</th>
+                <th>Datum</th>
+                <th>Místo</th>
+                <th>Škoda</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model.Events)
+            {
+                <tr>
+                    <td>@e.PopisUdalosti</td>
+                    <td>@e.DatumUdalosti.ToShortDateString()</td>
+                    <td>@e.MistoUdalosti</td>
+                    <td>@e.Skoda.ToString("C")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@e.Id">Detail</a>
+
+                        @* nová null-safe kontrola *@
+                        @if (currentPojistenecId != null && e.Pojisteni.PojisteniOsoby.Any(po => po.OsobaId == currentPojistenecId))
+                        {
+                            <text> | </text>
+                    
+                            <a asp-action="Edit" asp-route-id="@e.Id">Editovat</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -119,7 +119,7 @@ namespace EvidencePojisteniWeb.Areas.Identity.Pages.Account
                 {
 
 
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Uživatel si vytvořil nový účet s heslem.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -130,8 +130,8 @@ namespace EvidencePojisteniWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Potvrďte svůj e-mail",
+                        $"Potvrďte prosím svůj účet do <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>kliknutím sem</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -161,7 +161,7 @@ namespace EvidencePojisteniWeb.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                throw new InvalidOperationException($"Nelze vytvořit instanci '{nameof(ApplicationUser)}'. " +
                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
@@ -171,7 +171,7 @@ namespace EvidencePojisteniWeb.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException("Výchozí uživatelské rozhraní vyžaduje úložiště uživatelů s e-mailovou podporou.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }

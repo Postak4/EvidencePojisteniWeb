@@ -1,14 +1,16 @@
 ﻿@model EvidencePojisteniWeb.Models.PojistnaUdalostModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Vložit novou událost";
 }
 
-<h1>Create</h1>
+<div class="container">
+    <header class="pb-2 border-bottom">
+        <h3 href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @ViewData["Title"]
+        </h3>
+    </header>
 
-<h4>PojistnaUdalostModel</h4>
-<hr />
-<div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -53,11 +55,14 @@
                 <span asp-validation-for="Poznamka" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PojisteniId" class="control-label"></label>
-                <select asp-for="PojisteniId" class ="form-control" asp-items="ViewBag.PojisteniId"></select>
+                <label asp-for="PojisteniId" class="control-label">Typ pojištění</label>
+                <select asp-for="PojisteniId" class ="form-control" asp-items="ViewBag.PojisteniId">
+                    <option value="">-- vyberte pojištění --</option>
+                </select>
+                <span asp-validation-for="PojisteniId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <button type="submit" value="Create" class="btn btn-outline-primary"></button>
             </div>
         </form>
     </div>
