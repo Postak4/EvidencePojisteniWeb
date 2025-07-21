@@ -35,7 +35,7 @@
                     </div>
 
                     <div class="card-footer bg-transparent text-end">
-                        <a asp-action="TypDetail" asp-route-typ="@item.Typ" class="btn btn-sm btn-outline-success">Zobrazit více</a>
+                        <a asp-action="TypDetail" asp-route-id="@( (int)item.Typ )" class="btn btn-sm btn-outline-success">Zobrazit více</a>
                         @* V budoucnu např.: asp-action="TypDetail" asp-route-typ="@item.Typ" *@
                     </div>
                 </div>

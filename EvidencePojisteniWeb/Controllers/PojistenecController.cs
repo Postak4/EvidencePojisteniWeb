@@ -57,7 +57,8 @@ namespace EvidencePojisteniWeb.Controllers
         // GET: Pojistenec/Create
         public IActionResult Create()
         {
-            return View();
+            // přesměrování na stránku registrace
+            return RedirectToPage("Account/Register", new { area = "Identity"});
         }
 
         // POST: Pojistenec/Create

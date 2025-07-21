@@ -10,9 +10,15 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Azure.Core;
+
+using EvidencePojisteniWeb.Data;
+using EvidencePojisteniWeb.Models;
+using EvidencePojisteniWeb.ValidationAttributes;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using EvidencePojisteniWeb.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -30,20 +36,23 @@ namespace EvidencePojisteniWeb.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;         // přidáme DbContext pro přístup k databázi
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)    // ← tady přijde DbContext z DI
         {
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = GetEmailStore();
+            _emailStore = (IUserEmailStore<ApplicationUser>)userStore;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;        // ← máte ho teď plně k dispozici
         }
 
         /// <summary>
@@ -71,28 +80,21 @@ namespace EvidencePojisteniWeb.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            [Required]
-            [Display(Name = "Jméno")]
-            public string FirstName { get; set; }
+            [Required] public string FirstName { get; set; }
+            [Required] public string LastName { get; set; }
+            [Required, EmailAddress] public string Email { get; set; }
+            [Required, DataType(DataType.Date)]
+            public DateTime DatumNarozeni { get; set; }
 
-            [Required]
-            [Display(Name = "Příjmení")]
-            public string LastName { get; set; }
+            [Required] public string UliceCpCe { get; set; }
+            [Required] public string Mesto { get; set; }
+            [Required] public string PSC { get; set; }
+            [Required] public string Stat { get; set; }
+            [Required, Phone] public string Telefon { get; set; }
 
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            [Required]
-            [StringLength(100, ErrorMessage = "Heslo musí mít alespoň {2} znaků.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Heslo")]
+            [Required, StringLength(100, MinimumLength = 6), DataType(DataType.Password)]
             public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Potvrď heslo")]
-            [Compare("Password", ErrorMessage = "Hesla se neshodují.")]
+            [DataType(DataType.Password), Compare("Password")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -107,51 +109,71 @@ namespace EvidencePojisteniWeb.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+
+            if (!ModelState.IsValid)
+                return Page();
+
+            var user = CreateUser();
+            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            var result = await _userManager.CreateAsync(user, Input.Password);
+
+            if (result.Succeeded)
             {
-                var user = CreateUser();
+                _logger.LogInformation("User created a new account with password.");
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
+                // vytvoření profilu pojištěnce
+                var pojistenec = new PojistenecModel
                 {
+                    Jmeno = Input.FirstName,
+                    Prijmeni = Input.LastName,
+                    DatumNarozeni = Input.DatumNarozeni,
+                    UliceCpCe = Input.UliceCpCe,
+                    Mesto = Input.Mesto,
+                    PSC = Input.PSC,
+                    Stat = Input.Stat,
+                    Telefon = Input.Telefon,
+                    Email = Input.Email,
+                    User = user
+                };
+                _context.Pojistenci.Add(pojistenec);
+                await _context.SaveChangesAsync();
+
+                user.PojistenecModelId = pojistenec.Id;
+                await _userManager.UpdateAsync(user);
+
+                // … zbytek potvrzení e‑mailu a přihlášení …
 
 
-                    _logger.LogInformation("Uživatel si vytvořil nový účet s heslem.");
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    protocol: Request.Scheme);
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                await _emailSender.SendEmailAsync(Input.Email, "Potvrďte svůj e-mail",
+                    $"Potvrďte prosím svůj účet do <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>kliknutím sem</a>.");
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Potvrďte svůj e-mail",
-                        $"Potvrďte prosím svůj účet do <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>kliknutím sem</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                {
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            foreach (var e in result.Errors)
+                ModelState.AddModelError(string.Empty, e.Description);
+
             return Page();
         }
+
 
         private ApplicationUser CreateUser()
         {

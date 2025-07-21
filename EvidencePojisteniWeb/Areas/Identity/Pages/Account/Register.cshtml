@@ -4,7 +4,6 @@
 
 @{
     ViewData["Title"] = "Registrace";
-
     var bcItems = new List<BreadcrumbItem>
     {
         new BreadcrumbItem { Text = "Domů", Controller = "Home", Action = "Index" },
@@ -14,63 +13,121 @@
 @await Html.PartialAsync("_Breadcrumb", bcItems)
 
 <div class="container">
-    <header class="pb-2 mb-3 border-bottom">
-        <h3 class="text-body-emphasis">@ViewData["Title"]</h3>
+    <header class="pb-2 border-bottom">
+        <h3 class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @ViewData["Title"]
+        </h3>
     </header>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="bg-success text-white rounded-3 p-4 my-3">
-                <div class="row justify-content-around align-items-baseline">
-                    <!-- logo a nadpis -->
-                    <div class="col-md-4 text-center mb-4 mb-md-0">
-                        <h4>Vytvořit nový účet</h4>
-                        <img src="~/images/owl_logo.png" alt="Logo" width="150" height="150" class="img-thumbnail mb-3" />
-                    </div>
+    <div class="container mt-4 text-white bg-success p-4 rounded-3">
+        <form method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                    <!-- formulář -->
-                    <div class="col-md-6">
-                        <form method="post" novalidate>
-                            <div class="mb-2">
-                                <label asp-for="Input.FirstName" class="form-label"></label>
-                                <input asp-for="Input.FirstName" class="form-control"
-                                       placeholder="Zadejte své jméno" />
-                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-                            </div>
-                            <div class="mb-2">
-                                <label asp-for="Input.LastName" class="form-label"></label>
-                                <input asp-for="Input.LastName" class="form-control"
-                                       placeholder="Zadejte své příjmení" />
-                                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-                            </div>
-                            <div class="mb-2">
-                                <label asp-for="Input.Email" class="form-label"></label>
-                                <input asp-for="Input.Email" class="form-control"
-                                       placeholder="email@domena.cz" />
-                                <span asp-validation-for="Input.Email" class="text-danger"></span>
-                            </div>
-                            <div class="mb-2">
-                                <label asp-for="Input.Password" class="form-label"></label>
-                                <input asp-for="Input.Password" type="password" class="form-control"
-                                       placeholder="Zvolte heslo" />
-                                <span asp-validation-for="Input.Password" class="text-danger"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label asp-for="Input.ConfirmPassword" class="form-label"></label>
-                                <input asp-for="Input.ConfirmPassword" type="password" class="form-control"
-                                       placeholder="Potvrďte heslo" />
-                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                            </div>
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-outline-light px-5">
-                                    Registrovat
-                                </button>
-                            </div>
-                        </form>
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.FirstName" class="control-label"></label>
+                        <input asp-for="Input.FirstName" class="form-control" placeholder="Zadejte své jméno" />
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.LastName" class="control-label"></label>
+                        <input asp-for="Input.LastName" class="form-control" placeholder="Zadejte své příjmení" />
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.Email" class="control-label"></label>
+                        <input asp-for="Input.Email" class="form-control" placeholder="email@domena.cz" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.DatumNarozeni" class="control-label"></label>
+                        <input asp-for="Input.DatumNarozeni" type="date" class="form-control" />
+                        <span asp-validation-for="Input.DatumNarozeni" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.UliceCpCe" class="control-label"></label>
+                        <input asp-for="Input.UliceCpCe" class="form-control" placeholder="Např. Sokolská 12" />
+                        <span asp-validation-for="Input.UliceCpCe" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.Mesto" class="control-label"></label>
+                        <input asp-for="Input.Mesto" class="form-control" placeholder="Např. Ostrava" />
+                        <span asp-validation-for="Input.Mesto" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.PSC" class="control-label"></label>
+                        <input asp-for="Input.PSC" class="form-control" placeholder="Např. 74723" />
+                        <span asp-validation-for="Input.PSC" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.Stat" class="control-label"></label>
+                        <input asp-for="Input.Stat" class="form-control" placeholder="Např. Česká republika" />
+                        <span asp-validation-for="Input.Stat" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.Telefon" class="control-label"></label>
+                        <input asp-for="Input.Telefon" type="tel" class="form-control" placeholder="+420 ..." />
+                        <span asp-validation-for="Input.Telefon" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.Password" class="control-label"></label>
+                        <input asp-for="Input.Password" type="password" class="form-control" placeholder="Zvolte heslo" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label asp-for="Input.ConfirmPassword" class="control-label"></label>
+                        <input asp-for="Input.ConfirmPassword" type="password" class="form-control" placeholder="Potvrďte heslo" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-group mt-3 text-center">
+                <div>
+                    <input type="submit" value="Registrovat" class="btn btn-lg btn-outline-light border-1" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-5">
+        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Zpět na domovskou</a>
     </div>
 </div>
 

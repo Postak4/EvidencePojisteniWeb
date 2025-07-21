@@ -1,10 +1,21 @@
 ﻿@model EvidencePojisteniWeb.Models.ViewModels.TypPojisteniCardViewModel
 @using EvidencePojisteniWeb.Models.ViewModels;
+@using EvidencePojisteniWeb.Models;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = Model.Nazev;
-    var pocet = ViewBag.Pocet as int? ?? 0;
 
+    bool isSignedIn = SignInManager.IsSignedIn(User);
+    // Získání ID přihlášeného uživatele z ViewBag
+    var pojistenecId = (int?)ViewBag.PojistenecId;
+    // použijeme Model.Typ k vytvoření segmentu id
+    var idSegment = (int)Model.Typ;
+
+    var pocet = ViewBag.Pocet as int? ?? 0;
+    
     var bcItems = new List<BreadcrumbItem>
     {
         new BreadcrumbItem { Text = "Domů", Controller = "Home", Action = "Index" },
@@ -39,9 +50,22 @@
                     <span class="badge bg-success fs-6">@pocet sjednaných</span>
                 </h3>
 
-                <a type="button" class="btn btn-success" asp-area="Identity" asp-page="/Account/Login">
-                    Přihlásit se
-                </a>
+                 <!-- změna tlačítka pokud je uživatel přihlášený -->
+                <div class="d-flex justify-content-end">
+                    @if (!isSignedIn)
+                    {
+                        <a class="btn btn-success" asp-area="Identity" asp-page="/Account/Login">
+                            Přihlaste se pro sjednání
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-success" asp-controller="PojisteniOsoby" asp-action="Create"
+                            asp-route-typPojisteni="@idSegment">
+                                Vytvořit nové pojištění
+                        </a>
+                    }
+                </div>
             </div>
 
             <p class="fs-5">@Model.Popis</p>

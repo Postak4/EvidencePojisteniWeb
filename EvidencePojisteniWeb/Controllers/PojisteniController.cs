@@ -8,16 +8,21 @@ using EvidencePojisteniWeb.Data;
 using EvidencePojisteniWeb.Models;
 using EvidencePojisteniWeb.Models.ViewModels;
 using EvidencePojisteniWeb.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace EvidencePojisteniWeb.Controllers
 {
     public class PojisteniController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public PojisteniController(ApplicationDbContext context)
+        public PojisteniController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: Pojisteni
@@ -168,12 +173,21 @@ namespace EvidencePojisteniWeb.Controllers
             return _context.Pojisteni.Any(e => e.Id == id);
         }
 
-        public async Task<IActionResult> TypDetail(TypPojisteni typ)
+        // GET: Pojisteni/TypDetail/5
+        [HttpGet]
+        public async Task<IActionResult> TypDetail(int id)
         {
+            // 1) Převedeme `id` na váš enum
+            if (!Enum.IsDefined(typeof(TypPojisteni), id))
+                return NotFound();
+            var typ = (TypPojisteni)id;
+
+            // 2) Spočteme počet smluv
             var pocetSmluv = await _context.Pojisteni
                 .CountAsync(p => p.TypPojisteni == typ);
 
-            var model = new TypPojisteniCardViewModel
+            // 3) Sestavíme ViewModel
+            var vm = new TypPojisteniCardViewModel
             {
                 Typ = typ,
                 Nazev = typ.GetDisplayName(),
@@ -188,19 +202,27 @@ namespace EvidencePojisteniWeb.Controllers
                 },
                 DlouhyPopis = typ switch
                 {
-                    TypPojisteni.Zivotni => "Životní pojištění je určeno pro osoby, které chtějí zajistit své blízké v případě nečekané události. Lze ho kombinovat s investiční složkou.",
-                    TypPojisteni.Urazove => "Úrazové pojištění pokrývá škody způsobené úrazy včetně trvalých následků. Vhodné pro sportovce, děti i seniory.",
-                    TypPojisteni.Cestovni => "Cestovní pojištění zahrnuje krytí léčebných výloh, repatriaci, ztrátu zavazadel, zpoždění letu a další situace při cestování.",
-                    TypPojisteni.Majetkove => "Toto pojištění chrání vaši nemovitost, domácnost a cennosti před riziky jako požár, povodeň, krádež nebo vandalismus.",
-                    TypPojisteni.Odpovednost => "Pojištění odpovědnosti vás chrání, pokud neúmyslně způsobíte škodu třetí osobě – ať už na zdraví, majetku nebo životě.",
-                    _ => ""
+                    TypPojisteni.Zivotni => "Životní pojištění je určeno pro osoby, které chtějí zajistit své blízké …",
+                    TypPojisteni.Urazove => "Úrazové pojištění pokrývá škody způsobené úrazy včetně trvalých následků…",
+                    TypPojisteni.Cestovni => "Cestovní pojištění zahrnuje krytí léčebných výloh, repatriaci…",
+                    TypPojisteni.Majetkove => "Toto pojištění chrání vaši nemovitost, domácnost a cennosti…",
+                    TypPojisteni.Odpovednost => "Pojištění odpovědnosti vás chrání, pokud neúmyslně způsobíte škodu…",
+                    _ => string.Empty
                 },
                 ObrazekUrl = $"/images/typyPojisteni/{typ.ToString().ToLower()}.jpg"
             };
 
-            ViewBag.Pocet = pocetSmluv;
-            return View(model);
-        }
+            // 4) Zjistíme přihlášeného pojištěnce
+            int? pojistenecId = null;
+            if (_signInManager.IsSignedIn(User))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                pojistenecId = user?.PojistenecModelId;
+            }
 
+            ViewBag.Pocet = pocetSmluv;
+            ViewBag.PojistenecId = pojistenecId;
+            return View(vm);
+        }
     }
 }

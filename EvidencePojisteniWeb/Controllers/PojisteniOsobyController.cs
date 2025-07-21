@@ -7,16 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EvidencePojisteniWeb.Data;
 using EvidencePojisteniWeb.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EvidencePojisteniWeb.Controllers
 {
+    // aby na stránku nezavítal nějaký nezvaný host, přidáme autorizaci
+    [Authorize]
     public class PojisteniOsobyController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public PojisteniOsobyController(ApplicationDbContext context)
+        public PojisteniOsobyController(
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         // GET: PojisteniOsoby
@@ -47,23 +58,39 @@ namespace EvidencePojisteniWeb.Controllers
         }
 
         // GET: PojisteniOsoby/Create
-        public async Task<IActionResult> Create(int pojistenecId)
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Create(TypPojisteni typPojisteni)
         {
+            // ověříme uživatele a získáme jeho profil pojištěnce
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || user.PojistenecModelId == null)
+            {
+                // pokud nemá profil pošleme ho do oregistrace
+                return RedirectToAction("Create", "Pojistenec");
+            }
+            int pojistenecId = user.PojistenecModelId.Value;
+
+            //Připravíme ViewBag a select listy pro formulář
             var pojistenec = await _context.Pojistenci.FindAsync(pojistenecId);
-            if (pojistenec == null) return NotFound();
-
-            // Správně: SelectList pro enumy (pro správný binding ve view)
             ViewBag.Pojistenec = pojistenec;
-            ViewBag.TypPojisteni = new SelectList(Enum.GetValues<TypPojisteni>());
             ViewBag.Role = new SelectList(Enum.GetValues<RoleVuciPojisteni>());
+            ViewBag.TypPojisteni = new SelectList(
+                Enum.GetValues<TypPojisteni>()
+                    .Cast<TypPojisteni>()
+                    .Select(e => new { Id = e, Name = e.ToString() }),
+                "Id", "Name", typPojisteni);
 
-
+            // Vytvoříme model s předvyplněnými hodnotami
             var model = new PojisteniOsobyModel
             {
                 OsobaId = pojistenecId,
                 PlatnostOd = DateTime.Today,
-                PlatnostDo = DateTime.Today.AddYears(1),
-                Pojisteni = new PojisteniModel()
+                PlatnostDo = DateTime.Today.AddYears(1), // Přednastavení platnosti na 1 rok
+                Pojisteni = new PojisteniModel
+                {
+                    TypPojisteni = typPojisteni,
+                }
             };
 
             return View(model);
@@ -131,8 +158,6 @@ namespace EvidencePojisteniWeb.Controllers
         }
 
         // POST: PojisteniOsoby/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,OsobaId,PojisteniId,Role")] PojisteniOsobyModel pojisteniOsobyModel)
