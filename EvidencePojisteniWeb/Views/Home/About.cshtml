@@ -1,0 +1,275 @@
+﻿@using EvidencePojisteniWeb.Models.ViewModels
+@model IEnumerable<EvidencePojisteniWeb.Models.ViewModels.TechnologieViewModel>
+
+@{
+    ViewData["Title"] = "O projektu";
+
+    // Sestavení položek pro Breadcrumb
+    var bcItem = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem { Text = "Domů", Controller = "Home", Action = "Index" },
+        new BreadcrumbItem { Text = "O projektu", IsActive = true }
+    };
+}
+
+@await Html.PartialAsync("_Breadcrumb", bcItem)
+
+<div class="container">
+    <header class="pb-2 border-bottom">
+        <h3 class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            @ViewData["Title"]
+        </h3>
+    </header>
+
+    <div class="row">
+        <div class="p-4 bg-body-tertiary">
+            
+            <div class="container py-4">
+                <div class="p-5 mb-5 text-white rounded-3 shadow-lg" style="background: linear-gradient(135deg, #198754 0%, #2fa360 100%);">
+                    <h1 class="display-5 fw-bold text-warning">Evidence Pojisteni Web.cz</h1>
+                    <p class="col-md-8 fs-5">
+                        Tento projekt je vytvořený na základě požadavků na vytvoření plné verze
+                        Evidence pojištění pro kurz
+                        <a href="https://www.itnetwork.cz/prace-a-podnikani-v-it/rekvalifikacni-kurzy/rekvalifikacni-kurzy-csharp-net"
+                            class="link-light fw-bold" target="_blank">C# .NET Basic</a>
+                            na ITnetwork.
+                    </p>
+                    <a href="/" class="btn btn-light btn-lg">Zpět na úvod</a>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row g-4 mb-5 pb-3 shadow-lg">
+                    @foreach (var tech in Model)
+                    {
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="card h-100 text-center shadow-lg border-1">
+                                <img src="~/images/@tech.Img" class="card-img-top mx-auto mt-4" style="width:48px" alt="@tech.Name">
+                                <div class="card-body">
+                                    <h6 class="fw-semibold">@tech.Name</h6>
+                                    <p class="card-text small">@tech.Description</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="container mb-5">
+                <div class="row">
+                    <aside class="col-lg-4 mb-4">
+                        <div class="bg-light p-4 rounded">
+                            <h4 class="mb-3">Projekt by měl splňovat</h4>
+                            <ul>
+                                <li>
+                                    Aplikace obsahuje kompletní správu (CRUD) <strong>pojištěných</strong>
+                                    (např. "Jan Novák") a jejich <strong>pojištění</strong> (např.
+                                    "pojištění bytu"):
+                                    <ul>
+                                        <li>Vytvoření pojištěného</li>
+                                        <li>Vytvoření pojištění</li>
+                                        <li>Zobrazení detailu pojištěného včetně jeho pojištění</li>
+                                        <li>Zobrazení detailu pojištění</li>
+                                        <li>Zobrazení seznamu pojištěných</li>
+                                        <li>Odstranění pojištěného včetně všech jeho pojištění</li>
+                                        <li>Odstranění pojištění</li>
+                                        <li>Editace pojištěného</li>
+                                        <li>Editace pojištění pojištěného</li>
+                                    </ul>
+                                </li>
+                                <li>Dané entity jsou uloženy v SQL databázi</li>
+                                <li>
+                                    Aplikace je naprogramována podle dobrých praktik a je plně
+                                    responzivní
+                                </li>
+                            </ul>
+                        </div>
+                    </aside>
+                    <main class="col-lg-8">
+                        <div class="bg-white p-4 rounded shadow-lg">
+                            <h4 class="mb-3">Doporučené rozšíření</h4>
+                            <ul>
+                                <li>
+                                    Aplikace podporuje uživatelské role (pojištěný, administrátor),
+                                    navrhni a implementuj, kdo vidí a může editovat jaká data
+                                </li>
+                                <li>
+                                    Aplikace eviduje <strong>pojistné události</strong> pojištěných,
+                                    rovněž pomocí kompletní správy (CRUD)
+                                </li>
+                            </ul>
+                            <h4 class="mt-4 mb-3">Expertní rozšíření</h4>
+                            <ul>
+                                <li>
+                                    Aplikace podporuje rozlišení <strong>pojistníků</strong> (těch, kdo
+                                    platí pojištění) a <strong>pojištěných</strong> (těch, na koho se
+                                    pojištění vztahuje). Místo zavedení 2 databázových tabulek se zamysli nad
+                                    řešením přes výčtový typ (enum).
+                                </li>
+                                <li>Aplikace generuje statistiky ve formě reportů</li>
+                            </ul>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <div class="bg-success p-5 mb-4 rounded-3">
+
+                <h4 class="display-4 fw-bold text-white">Evidence Pojisteni Web.cz</h4>
+
+                <p class="col-md-8 fs-6 fw-bold">
+                    Tento projekt je vytvořený na základě požadavků na vytvoření plné verze
+                    Evidence pojištění pro kurz:
+                    <a class="text-decoration-none text-info" href="https://www.itnetwork.cz/prace-a-podnikani-v-it/rekvalifikacni-kurzy/rekvalifikacni-kurzy-csharp-net"
+                       target="_blank">C# .NET Basic - Akreditovaný rekvalifikační kurz</a>, pro IT akademii
+                    <a class="text-decoration-none text-info" href="https://itnetwork.cz/" target="_blank">
+                        ITnetwork
+                    </a>.
+                </p>
+            </div> *@
+
+@*   
+    <div class="col-md-8">
+            <h4><u>Projekt by měl splňovat tyto kritéria:</u></h4>
+            <div class="pt-4">
+                <ul>
+                    <li>
+                        Aplikace obsahuje kompletní správu (CRUD) <strong>pojištěných</strong>
+                        (např. "Jan Novák") a jejich <strong>pojištění</strong> (např.
+                        "pojištění bytu"):
+                        <ul>
+                            <li>Vytvoření pojištěného</li>
+                            <li>Vytvoření pojištění</li>
+                            <li>Zobrazení detailu pojištěného včetně jeho pojištění</li>
+                            <li>Zobrazení detailu pojištění</li>
+                            <li>Zobrazení seznamu pojištěných</li>
+                            <li>Odstranění pojištěného včetně všech jeho pojištění</li>
+                            <li>Odstranění pojištění</li>
+                            <li>Editace pojištěného</li>
+                            <li>Editace pojištění pojištěného</li>
+                        </ul>
+                    </li>
+                    <li>Dané entity jsou uloženy v SQL databázi</li>
+                    <li>
+                        Aplikace je naprogramována podle dobrých praktik a je plně
+                        responzivní
+                    </li>
+                </ul>
+                <h4>Doporučené rozšíření</h4>
+                <ul>
+                    <li>
+                        Aplikace podporuje uživatelské role (pojištěný, administrátor),
+                        navrhni a implementuj, kdo vidí a může editovat jaká data
+                    </li>
+                    <li>
+                        Aplikace eviduje <strong>pojistné události</strong> pojištěných,
+                        rovněž pomocí kompletní správy (CRUD)
+                    </li>
+                </ul>
+                <h4>Expertní rozšíření</h4>
+                <ul>
+                    <li>
+                        Aplikace podporuje rozlišení <strong>pojistníků</strong> (těch, kdo
+                        platí pojištění) a <strong>pojištěných</strong> (těch, na koho se
+                        pojištění vztahuje). Místo zavedení 2 databázových tabulek se zamysli nad
+                        řešením přes výčtový typ (enum).
+                    </li>
+                    <li>Aplikace generuje statistiky ve formě reportů</li>
+                </ul>
+            </div>
+        </div> *@
+
+@*             <div class="row border bg-info rounded-3 p-4">
+                <div class="mb-2">
+                    <h3><u>Technologie</u></h3>
+                </div>
+
+                <!--první karta-->
+                <div class="col-12 col-md-4 col-lg-2">
+                    <div class="card h-100 text-center border-0">
+                        <img class="card-img-top mx-auto mt-3" style="width: 48px;" src="~/images/html_css.png" alt="Obrázek HTML5/CSS3">
+                        <div class="card-body p-2">
+                            <h6>HTML5/CSS3</h6>
+                            <p class="card-text small">
+                                HTML5 a CSS3 spolupracují na tvorbě moderních webových stránek. HTML5 poskytuje strukturu a obsah,
+                                zatímco CSS3 se stará o vizuální prezentaci a rozložení obsahu. Společně umožňují vytvářet responzivní,
+                                poutavé a uživatelsky přívětivé webové stránky.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!--Druhá karta-->
+                <div class="col-12 col-md-4 col-lg-2">
+                    <div class="card h-100 text-center border-0">
+                        <img class="card-img-top mx-auto mt-3" style="width: 40px;" src="~/images/csharp.png" alt="Obrázek Csharm">
+                        <div class="card-body p-2">
+                            <h6>C#</h6>
+                            <p class="card-text small">
+                                C# je moderní, objektově orientovaný programovací jazyk, vyvinutý společností Microsoft.
+                                Je součástí platformy .NET a je navržen jako jazyk jednoduchý, moderní a typově bezpečný. C# kombinuje
+                                principy a funkce z jiných jazyků, jako jsou C++, Java a Pascal.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!--Třetí karta-->
+                <div class="col-12 col-md-4 col-lg-2">
+                    <div class="card h-100 text-center border-0">
+                        <img class="card-img-top mx-auto mt-3" style="width: 40px;" src="~/images/javascript.png" alt="Obrázek JavaScript">
+                        <div class="card-body p-2">
+                            <h6>JavaScript</h6>
+                            <p class="card-text small">
+                                JavaScript (JS) je skriptovací jazyk používaný především pro tvorbu interaktivních webových stránek a
+                                aplikací. Umožňuje dynamické chování stránek, jako jsou animace, reakce na akce uživatele, aktualizace
+                                obsahu bez nutnosti obnovení stránky a další.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!--Čtvrtá karta-->
+                <div class="col-12 col-md-4 col-lg-2">
+                    <div class="card h-100 text-center border-0">
+                        <img class="card-img-top mx-auto mt-3" style="width: 40px;" src="~/images/asp.net-core-mvc.webp" alt="Obrázek ASP.NET Core">
+                        <div class="card-body p-2">
+                            <h6>ASP.NET Core MVC</h6>
+                            <p class="card-text small">
+                                ASP.NET Core MVC je opensourcový, multiplatformní a testovatelný prezentační framework. Stručně řečeno,
+                                ASP.NET Core MVC je způsob, jak efektivně stavět webové stránky a webová API v prostředí ASP.NET Core,
+                                který klade důraz na modularitu, testovatelnost a moderní webové standardy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!--Pátá karta-->
+                <div class="col-12 col-md-4 col-lg-2">
+                    <div class="card h-100 text-center border-0">
+                        <img class="card-img-top mx-auto mt-3" style="width: 40px;" src="~/images/Bootstrap.png" alt="Obrázek Bootstrap">
+                        <div class="card-body p-2">
+                            <h6>Bootstrap</h6>
+                            <p class="card-text small">
+                                Bootstrap je front-endový framework, který usnadňuje vývoj responzivních webových stránek a aplikací.
+                                Obsahuje předem připravené CSS a JavaScriptové komponenty a systém mřížky, díky čemuž se web automaticky
+                                přizpůsobí různým velikostem obrazovky.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!--Šestá karta-->
+                <div class="col-12 col-md-4 col-lg-2">
+                    <div class="card h-100 text-center border-0">
+                        <img class="card-img-top mx-auto mt-3" style="width: 72px;" src="~/images/t-sql_databaze.webp" alt="Obrázek T-SQL Databáze">
+                        <div class="card-body p-2">
+                            <h6>MS-SQL Databáze</h6>
+                            <p class="card-text small">
+                                MS SQL databáze, nebo přesněji Microsoft SQL Server, je relační databázový systém vyvinutý společností
+                                Microsoft. Slouží k ukládání, správě a vyhledávání dat v tabulkovém formátu a je široce používán pro
+                                různé aplikace, včetně datových skladů, analytických systémů a webových aplikací.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> *@

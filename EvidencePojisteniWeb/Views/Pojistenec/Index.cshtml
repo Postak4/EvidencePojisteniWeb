@@ -16,7 +16,7 @@
 
 <div class="container">
     <header class="pb-2 border-bottom">
-        <h3 href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
+        <h3 class="d-flex align-items-center text-body-emphasis text-decoration-none">
             @ViewData["Title"]
         </h3>
     </header>
@@ -29,7 +29,7 @@
 
     <div class="col mt-4">
         <div class="table-responsive rounded-3 overflow-hidden">
-            <table class="table table-hover table-bordered mb-0">
+            <table class="table table-hover table-bordered mb-2">
                 @if (Model.Count > 0)
                 {
                     <thead>
@@ -44,6 +44,14 @@
                             <th>@Html.DisplayNameFor(model => model[0].Telefon)</th>
                             <th>@Html.DisplayNameFor(model => model[0].Email)</th>
                             <th></th>
+                        </tr>
+                    </thead>
+                }
+                else
+                {
+                    <thead>
+                        <tr>
+                            <th>V tabulce nejsou žádné data..</th>
                         </tr>
                     </thead>
                 }

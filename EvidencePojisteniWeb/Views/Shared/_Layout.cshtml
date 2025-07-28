@@ -32,6 +32,12 @@
 </head>
 <body>
     <header class="sticky-top">
+
+        @{
+            var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+            var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        }
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark text-light bg-dark box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand mb-1 fs-4 fw-bold @(ViewContext.RouteData.Values["controller"]?.ToString()
@@ -44,27 +50,28 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" id="navbarSupportedContent">
                     <ul class="navbar-nav nav-underline justify-content-center flex-grow-1">
+                        
                         <li class="nav-item mx-1">
-                            <a class="nav-link text-light @(ViewContext.RouteData.Values["controller"]?.ToString() 
-                                == 
-                            "Pojistenec" ? "active fw-bold" : "")" asp-area="" asp-controller="Pojistenec" asp-action="Index">Pojištěnci</a>
+                            <a class="nav-link text-light @(currentController == "Pojistenec" ? "active fw-bold" : "")"
+                               asp-controller="Pojistenec" asp-action="Index">Pojištěnci</a>
                         </li>
                         <li class="nav-item mx-1">
-                            <a class="nav-link text-light @(ViewContext.RouteData.Values["controller"]?.ToString()
-                                ==
-                            "Pojisteni" ? "active fw-bold" : "")" asp-area="" asp-controller="Pojisteni" asp-action="Index">Pojištění</a>
+                            <a class="nav-link text-light @(currentController == "Pojisteni" ? "active fw-bold" : "")"
+                               asp-controller="Pojisteni" asp-action="Index">Pojištění</a>
                         </li>
                         <li class="nav-item mx-1">
-                            <a class="nav-link text-light @(ViewContext.RouteData.Values["controller"]?.ToString()
-                                ==
-                            "PojistnaUdalost" ? "active fw-bold" : "")" asp-area="" asp-controller="PojistnaUdalost" asp-action="Index">Události</a>
+                            <a class="nav-link text-light @(currentController == "PojistnaUdalost" ? "active fw-bold" : "")"
+                               asp-controller="PojistnaUdalost" asp-action="Index">Události</a>
                         </li>
                         <li class="nav-item mx-1">
-                            <a class="nav-link text-light @(ViewContext.RouteData.Values["action"]?.ToString()
-                                ==
-                            "Privacy" ? "active fw-bold" : "")" asp-area="" asp-controller="Home" asp-action="Privacy">O&nbsp;aplikaci...</a>
+                            <a class="nav-link text-light @(currentController == "Home" && currentAction == "About" ? "active fw-bold" : "")"
+                               asp-controller="Home" asp-action="About">O projektu</a>
+                        </li>
+                        <li class="nav-item mx-1">
+                            <a class="nav-link text-light @(currentController == "Home" && currentAction == "Privacy" ? "active fw-bold" : "")"
+                               asp-controller="Home" asp-action="Privacy">GDPR</a>
                         </li>
                     </ul>
                     <partial name="~/Areas/Identity/Pages/_LoginPartial.cshtml" />
