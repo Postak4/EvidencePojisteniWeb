@@ -58,6 +58,14 @@
                             Přihlaste se pro sjednání
                         </a>
                     }
+                    else if (User.IsInRole("Admin"))
+                    {
+                        <span title="Admin zde nemůže přiřadit nové pojištění">
+                            <a class="btn btn-outline-success disabled" aria-disabled="true">
+                                Vytvořit nové pojištění
+                            </a>
+                        </span>
+                    }
                     else
                     {
                         <a class="btn btn-outline-success" asp-controller="PojisteniOsoby" asp-action="Create"

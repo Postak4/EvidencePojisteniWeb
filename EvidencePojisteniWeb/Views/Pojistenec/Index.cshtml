@@ -23,7 +23,20 @@
 
     <div class="row text-center mt-4">
         <div class="col">
-            <a role="button" class="btn btn-primary" asp-page="/Account/Register" asp-area="Identity">Nový pojištěnec</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="btn btn-primary" asp-page="/Account/Register" asp-area="Identity">
+                    Nový pojištěnec
+                </a>
+            }
+            else
+            {
+                <span title="Zde může přidávat pojištěnce jen admin">
+                    <a class="btn btn-primary disabled">
+                        Nový pojištěnec
+                    </a>
+                </span>
+            }
         </div>
     </div>
 

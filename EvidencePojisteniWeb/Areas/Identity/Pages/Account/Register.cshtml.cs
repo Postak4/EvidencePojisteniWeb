@@ -10,13 +10,10 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Azure.Core;
-
 using EvidencePojisteniWeb.Data;
 using EvidencePojisteniWeb.Models;
 using EvidencePojisteniWeb.ValidationAttributes;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

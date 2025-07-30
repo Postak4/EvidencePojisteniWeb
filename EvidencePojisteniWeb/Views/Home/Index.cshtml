@@ -1,5 +1,8 @@
-﻿
+﻿@using Microsoft.AspNetCore.Identity
 @using EvidencePojisteniWeb.Models.ViewModels
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Evidence pojištění";
@@ -31,7 +34,24 @@
                 Vám nabízejí širokou škálu možností pojištění, proti nechtěným událostem.
             </p>
 
-            <a class="btn btn-success btn-lg" type="button" asp-controller="Pojistenec" asp-action="Index">Vsupte do portálu</a>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <a class="btn btn-success btn-lg" type="button" asp-controller="Pojistenec" asp-action="Index">Vsupte do portálu</a>
+            }
+            else
+            {
+                <a class="btn btn-success text-light @(ViewContext.RouteData.Values["page"]?.ToString()
+                            ==
+                        "/Account/Register" ? "active fw-bold" : "")" asp-area="Identity" asp-page="/Account/Register">
+                    Zaregistrujte se
+                </a>
+
+                <a class="btn btn-success text-light @(ViewContext.RouteData.Values["page"]?.ToString()
+                            ==
+                        "/Account/Login" ? "active fw-bold" : "")" asp-area="Identity" asp-page="/Account/Login">
+                    Přihlaste se
+                </a>
+            }
         </div>
     </div>
 
