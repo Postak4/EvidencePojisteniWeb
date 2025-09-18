@@ -44,6 +44,7 @@
             <thead class="table-primary">
                 <tr>
                     <th>Typ pojištění</th>
+                    <th>Předmět pojištění</th>
                     <th>Částka v Kč</th>
                     <th>Akce</th>
                 </tr>
@@ -53,6 +54,7 @@
                 {
                     <tr>
                         <td>@vztah.Pojisteni?.TypPojisteni</td>
+                        <td>@vztah.Pojisteni?.PredmetPojisteni</td>
                         <td>@vztah.Pojisteni?.Castka.ToString("N0") Kč</td>
                         <td>
                             <a asp-controller="PojisteniOsoby" asp-action="Edit" asp-route-id="@vztah.Id"
@@ -74,6 +76,7 @@
         <a asp-controller="PojisteniOsoby" asp-action="Create" asp-route-pojistenecId="@Model.Id" class="btn btn-primary">Přidat pojištění</a>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editovat pojištěnce</a>
         <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Odstranit pojištěnce</a>
+        <a asp-controller="PojistnaUdalost" asp-action="Index" asp-route-pojistenecId="@Model.Id" class="btn btn-secondary">Vytvořit pojistnou událost</a>
     </div>
 
     <div class="mt-5">

@@ -47,7 +47,7 @@
                 {
                     <thead>
                         <tr class="table-success">
-                            <th>@Html.DisplayNameFor(model => model[0].Jmeno)</th>
+                            <th>@Html.DisplayNameFor(model => model[0].Jmeno) (Detail)</th>
                             <th>Pojištění</th>
                             <th>@Html.DisplayNameFor(model => model[0].DatumNarozeni)</th>
                             <th>@Html.DisplayNameFor(model => model[0].UliceCpCe)</th>
@@ -86,7 +86,12 @@
                                     {
                                         <div class="mb-1">
                                             <strong>@skupina.Key?.TypPojisteni</strong><br />
-                                            (@string.Join("/", skupina.Select(g => g.Role.ToString())))
+
+                                            @Html.Raw(string.Join(" / ", skupina.Select(g =>
+                                            g.Role == RoleVuciPojisteni.Pojistnik
+                                            ? "<span class='text-success'>(Pojistník)</span>"
+                                            : "<span class='text-primary'>(Pojištěný)</span>"
+                                            )))
                                         </div>
                                     }
                                 }
