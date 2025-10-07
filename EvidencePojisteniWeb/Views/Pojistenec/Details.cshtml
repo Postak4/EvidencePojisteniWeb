@@ -76,7 +76,7 @@
         <a asp-controller="PojisteniOsoby" asp-action="Create" asp-route-pojistenecId="@Model.Id" class="btn btn-primary">Přidat pojištění</a>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editovat pojištěnce</a>
         <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Odstranit pojištěnce</a>
-        <a asp-controller="PojistnaUdalost" asp-action="Index" asp-route-pojistenecId="@Model.Id" class="btn btn-secondary">Vytvořit pojistnou událost</a>
+        <a asp-controller="PojistnaUdalost" asp-action="Create" asp-route-pojistenecId="@Model.Id" class="btn btn-secondary">Vytvořit pojistnou událost</a>
     </div>
 
     <div class="mt-5">

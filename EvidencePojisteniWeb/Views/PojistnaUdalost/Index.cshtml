@@ -84,6 +84,19 @@
         }
     }
 
+    @* 
+        (Dočasná diagnostika – klidně na chvíli přidej nad tabulky) 
+        Pokud tady uvidíš nuly, víme, že v controlleru se seznamy prázdní (typicky kvůli filtrům/NULLům).
+        Pokud jsou nenulové a tabulka nic nezobrazuje, je problém ve view (např. jiný model/partial).
+    *@
+    <p class="text-muted">
+        Events: @(Model.Events?.Count() ?? 0),
+        StatsByInsuranceType: @(Model.StatsByInsuranceType?.Count() ?? 0),
+        SumByInsuranceType: @(Model.SumByInsuranceType?.Count() ?? 0)
+    </p>
+
+
+
     <div class="row">
         <div class="col-md-4">
             <!-- Tabulka 1: Statistiky událostí podle typu pojištění -->
@@ -160,12 +173,12 @@
                         <td>@e.PopisUdalosti</td>
                         <td>@e.DatumUdalosti.ToShortDateString()</td>
                         <td>@e.MistoUdalosti</td>
-                        <td>@e.Skoda.ToString("C")</td>
+                        <td>@(e.Skoda.ToString("C"))</td>
                         <td>
                             <a asp-action="Details" asp-route-id="@e.Id">Detail</a>
 
                             @* nová null-safe kontrola *@
-                            @if (currentPojistenecId != null && e.Pojisteni.PojisteniOsoby.Any(po => po.OsobaId == currentPojistenecId))
+                            @if (currentPojistenecId != null && e.Pojisteni?.PojisteniOsoby != null && e.Pojisteni.PojisteniOsoby.Any(po => po.OsobaId == currentPojistenecId))
                             {
                                 <text> | </text>
 

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
 using EvidencePojisteniWeb.Data;
 using EvidencePojisteniWeb.Models;
 using EvidencePojisteniWeb.Models.ViewModels;
+
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace EvidencePojisteniWeb.Controllers
 {
@@ -26,65 +29,71 @@ namespace EvidencePojisteniWeb.Controllers
         // GET: PojistnaUdalost
         public async Task<IActionResult> Index()
         {
-            // Základní seznam událostí
             var events = await _context.PojistneUdalosti
                 .Include(u => u.Pojisteni)
                 .ThenInclude(p => p.PojisteniOsoby)
+                .AsNoTracking()
                 .ToListAsync();
 
-            // Statistiky podle typu pojištění (počet událostí)
-            var stats = events
-                .GroupBy(e => e.Pojisteni.TypPojisteni)
-                .Select(g => new InsuranceTypeStats
-                {
-                    TypPojisteni = g.Key.ToString(),
-                    PocetUdalosti = g.Count(),
-                    CelkovaCastka = g.Sum(x => x.Skoda)
-                })
+            // Helper pro display name enumu
+            string EnumDisplay<T>(T value) where T : struct, Enum
+            {
+                var mem = typeof(T).GetMember(value.ToString()).FirstOrDefault();
+                var disp = mem?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                              .Cast<DisplayAttribute>().FirstOrDefault();
+                return disp?.Name ?? value.ToString();
+            }
+
+            // Jen události, které mají pojištění i typ pojištění
+            var eventsWithType = events
+                .Where(e => e.Pojisteni != null && e.Pojisteni.TypPojisteni.HasValue)
                 .ToList();
 
-            // Počty klientů: Celkový, pojistníci, pojištěnci
-            var totalClients = await _context.Pojistenci.CountAsync();
-            var pojistniciCount = await _context.PojisteneOsoby
+            var stats = eventsWithType
+                .GroupBy(e => e.Pojisteni!.TypPojisteni!.Value)
+                .Select(g => new InsuranceTypeStats
+                {
+                    TypPojisteni = EnumDisplay(g.Key),       // hezký popisek do tabulky
+                    PocetUdalosti = g.Count(),
+                    CelkovaCastka = g.Sum(x => x.Skoda)     // Skoda je decimal (není nullable) ✔
+                })
+                .OrderByDescending(x => x.PocetUdalosti)
+                .ToList();
+
+            var totalClients = await _context.Pojistenci.AsNoTracking().CountAsync();
+
+            var pojistniciCount = await _context.PojisteneOsoby.AsNoTracking()
                 .Where(po => po.Role == RoleVuciPojisteni.Pojistnik)
-                .Select(po => po.OsobaId)
-                .Distinct()
-                .CountAsync();
-            var pojistenciCount = await _context.PojisteneOsoby
+                .Select(po => po.OsobaId).Distinct().CountAsync();
+
+            var pojistenciCount = await _context.PojisteneOsoby.AsNoTracking()
                 .Where(po => po.Role == RoleVuciPojisteni.Pojisteny)
-                .Select(po => po.OsobaId)
-                .Distinct()
-                .CountAsync();
+                .Select(po => po.OsobaId).Distinct().CountAsync();
 
-            // Sumy částek k pojištěním (celková suma škod podle typu)
-            var sumByType = stats;
-
-            // načteme všechny Pojistenci s User (pro případ, že je budu dál potřebovat)
             var clients = await _context.Pojistenci
-                .Include(p => p.User)      // pokud potřebujete navigační vlastnost k User
+                .Include(p => p.User)
+                .AsNoTracking()
                 .ToListAsync();
 
-            //zajištění Id právě přihlášeného uživatele
             int? currentPojistenecId = null;
-            if (User.Identity.IsAuthenticated && User.IsInRole("Pojistenec"))
+            if (User.Identity?.IsAuthenticated == true && User.IsInRole("Pojistenec"))
             {
                 var user = await _userManager.GetUserAsync(User);
                 currentPojistenecId = user?.PojistenecModelId;
             }
             ViewBag.CurrentPojistenecId = currentPojistenecId;
 
-            // Naplnění viewmodelu
             var vm = new PojistnaUdalostIndexViewModel
             {
                 Events = events,
                 StatsByInsuranceType = stats,
+                SumByInsuranceType = stats,   // používáš stejný typ -> recyklujeme
                 Counts = new ClientCounts
-                { 
+                {
                     CelkovyPocetKlientu = totalClients,
                     PocetPojistniku = pojistniciCount,
                     PocetPojistencu = pojistenciCount
                 },
-                SumByInsuranceType = sumByType,
                 Pojistenci = clients
             };
 
