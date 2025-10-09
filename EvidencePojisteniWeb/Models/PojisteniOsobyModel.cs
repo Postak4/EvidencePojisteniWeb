@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 using EvidencePojisteniWeb.ValidationAttributes;
 
 namespace EvidencePojisteniWeb.Models
@@ -20,7 +19,9 @@ namespace EvidencePojisteniWeb.Models
         [Display(Name = "Pojištěnec")]
         public int OsobaId { get; set; }
 
-        // Navigační vlastnost pro PojistenecModel
+        /// <summary>
+        /// Navigační vlastnost pro PojistenecModel
+        /// </summary>
         [ForeignKey(nameof(OsobaId))]
         public PojistenecModel? Osoba { get; set; }
 

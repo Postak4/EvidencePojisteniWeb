@@ -20,6 +20,9 @@ namespace EvidencePojisteniWeb.Models
         // Nová kolekce – všechny záznamy propojení pojistění a osob
         public ICollection<PojisteniOsobyModel> PojisteniOsoby { get; set; } = new List<PojisteniOsobyModel>();
 
+        // Nová kolekce – všechny pojistné události spojené s pojištěním
+        public ICollection<PojistnaUdalostModel> PojistneUdalosti { get; set; } = new List<PojistnaUdalostModel>();
+
         [Required(ErrorMessage = "Vyberte typ pojištění")]
         [Display(Name = "Typ pojištění")]
         public TypPojisteni? TypPojisteni { get; set; }

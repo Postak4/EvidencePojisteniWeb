@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 using EvidencePojisteniWeb.ValidationAttributes;
 
 namespace EvidencePojisteniWeb.Models
@@ -13,6 +12,32 @@ namespace EvidencePojisteniWeb.Models
     {
         [Key]
         public int Id { get; set; }
+
+        /// <summary>
+        /// Foreign key pro Pojištěnce
+        /// </summary>
+        [Required]
+        [Display(Name = "Pojištěnec")]
+        public int OsobaId { get; set; }
+
+        /// <summary>
+        /// Navigační vlastnost pro PojistenecModel
+        /// </summary>
+        [ForeignKey(nameof(OsobaId))]
+        public PojistenecModel? Osoba { get; set; }
+
+        /// <summary>
+        /// FK na pojištění, ke kterému událost patří.
+        /// </summary>
+        [Required]
+        [Display(Name = "Pojištění")]
+        public int PojisteniId { get; set; }
+
+        /// <summary>
+        /// Navigační vlastnost na pojištění.
+        /// </summary>
+        [ForeignKey(nameof(PojisteniId))]
+        public PojisteniModel? Pojisteni { get; set; }
 
         /// <summary>
         /// Popis události (max 250 znaků).
@@ -75,14 +100,5 @@ namespace EvidencePojisteniWeb.Models
         [Display(Name = "Poznámka")]
         public string? Poznamka { get; set; }
 
-        /// <summary>
-        /// FK na pojištění, ke kterému událost patří.
-        /// </summary>
-        [Required]
-        [Display(Name = "Pojištění")]
-        public int PojisteniId { get; set; }
-
-        [ForeignKey(nameof(PojisteniId))]
-        public PojisteniModel? Pojisteni { get; set; }
     }
 }

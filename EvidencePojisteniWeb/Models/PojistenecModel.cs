@@ -12,11 +12,11 @@ namespace EvidencePojisteniWeb.Models
         // Primární klíč pro PojistenecModel
         public int Id { get; set; }
 
-        // Zde je kolekce pojištění, které má pojištěnec - původní návrh
-        //public ICollection<PojisteniModel>? Pojisteni { get; set; } = new List<PojisteniModel>();
-
         // Nová kolekce – všechny záznamy propojení pojistenců a pojištění
         public ICollection<PojisteniOsobyModel> PojisteniOsoby { get; set; } = new List<PojisteniOsobyModel>();
+
+        // Nová kolekce – všechny pojistné události spojené s pojištěncem
+        public ICollection<PojistnaUdalostModel> PojistneUdalosti { get; set; } = new List<PojistnaUdalostModel>();
 
         [Required(ErrorMessage = "Vyplňte jméno")]
         [StringLength(50, ErrorMessage = "{0} může mít nejvýše {1} znaků")]

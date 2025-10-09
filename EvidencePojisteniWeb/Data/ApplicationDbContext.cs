@@ -45,6 +45,21 @@ namespace EvidencePojisteniWeb.Data
                 .Property(u => u.Skoda)
                 .HasPrecision(18, 2);                          // Nastavení přesnosti pro decimal (18 číslic celkem, 2 desetinná místa)
 
+            // Vztah: Pojistenec (1) — (N) PojistnaUdalost
+            builder.Entity<PojistnaUdalostModel>()
+                .HasOne(u => u.Osoba)                           // navigace z události na pojištěnce
+                .WithMany(o => o.PojistneUdalosti)              // kolekce na pojištěnci
+                .HasForeignKey(u => u.OsobaId)
+                .OnDelete(DeleteBehavior.Restrict);             // nebo .Cascade podle logiky
+
+            // Vztah: Pojisteni (1) — (N) PojistnaUdalost
+            builder.Entity<PojistnaUdalostModel>()
+                .HasOne(u => u.Pojisteni)                       // navigace z události na pojištění
+                .WithMany(p => p.PojistneUdalosti)              // může nahradit .WithMany() pokud PojisteniModel nemá kolekci PojistnaUdalost
+                .HasForeignKey(u => u.PojisteniId)
+                .OnDelete(DeleteBehavior.Restrict);             // raději Restrict (mazání pojištění neodstraní historii událostí)
+
+
             // Mapování pro navigační vlastnosti
             builder.Entity<ApplicationUser>()
                 .HasOne(u => u.Pojistenec)
