@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EvidencePojisteniWeb.Controllers
 {
-    //[Authorize(Roles = "Admin, Pojistenec")]
+    [Authorize(Roles = "Admin, Pojistenec")]
     public class PojistnaUdalostController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -70,6 +70,7 @@ namespace EvidencePojisteniWeb.Controllers
         private bool IsAdmin() => User.IsInRole("Admin");
 
         // ---------- INDEX ----------
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var events = await _context.PojistneUdalosti
@@ -126,6 +127,47 @@ namespace EvidencePojisteniWeb.Controllers
             return View(vm);
         }
 
+        // ---------- My ----------
+        // Akci pro pojištěnce, která vrací jen jejich události
+        [Authorize(Roles = "Pojistenec")]
+        public async Task<IActionResult> My()
+        {
+            var osobaId = await GetCurrentPojistenecIdAsync();
+            if (osobaId == null)
+                return Forbid();
+
+            var events = await _context.PojistneUdalosti
+                .Include(u => u.Pojisteni)
+                .AsNoTracking()
+                .Where(e => e.OsobaId == osobaId.Value)
+                .OrderByDescending(e => e.DatumUdalosti)
+                .ToListAsync();
+
+            // jednoduché statistiky jen pro daného klienta (volitelné)
+            var stats = events
+                .Where(e => e.Pojisteni != null && e.Pojisteni.TypPojisteni.HasValue)
+                .GroupBy(e => e.Pojisteni!.TypPojisteni!.Value)
+                .Select(g => new InsuranceTypeStats
+                {
+                    TypPojisteni = GetEnumDisplayName<TypPojisteni>(g.Key),
+                    PocetUdalosti = g.Count(),
+                    CelkovaCastka = g.Sum(x => x.Skoda)
+                })
+                .OrderByDescending(x => x.PocetUdalosti)
+                .ToList();
+
+            var vm = new PojistnaUdalostIndexViewModel
+            {
+                Events = events,
+                StatsByInsuranceType = stats,
+                SumByInsuranceType = stats,
+                // ostatní vlastnosti ViewModelu klidně nech prázdné / defaultní
+            };
+
+            return View(vm);
+        }
+
+
         // ---------- DETAILS ----------
         public async Task<IActionResult> Details(int? id)
         {
@@ -155,6 +197,9 @@ namespace EvidencePojisteniWeb.Controllers
             var osobaId = await GetCurrentPojistenecIdAsync();
             if (osobaId == null) return RedirectToAction("Login", "Account");
 
+            // ➜ ULOŽÍME DO VIEWBAGU pro návratové tlačítko
+            ViewBag.OsobaId = osobaId.Value;
+
             var options = await GetInsuranceOptionsForUserAsync(osobaId.Value);
             if (!options.Any())
             {
@@ -167,9 +212,9 @@ namespace EvidencePojisteniWeb.Controllers
             return View(new PojistnaUdalostModel
             {
                 DatumUdalosti = DateTime.Today
-                // OsobaId se NEPOSÍLÁ z UI, nastaví se v POST
             });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -49,11 +49,30 @@
                                asp-controller="Pojisteni" asp-action="Index"
                                aria-current="@(currentController == "Pojisteni" ? "page" : null)">Pojištění</a>
                         </li>
-                        <li class="nav-item mx-1">
-                            <a class="nav-link text-light @(currentController == "PojistnaUdalost" ? "active fw-bold" : "")"
-                               asp-controller="PojistnaUdalost" asp-action="Index"
-                               aria-current="@(currentController == "PojistnaUdalost" ? "page" : null)">Události</a>
-                        </li>
+
+                        @*Zobrazení menu Událostí podle role*@
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item mx-1">
+                                <a class="nav-link text-light @((currentController == "PojistnaUdalost" && currentAction == "Index") ? "active fw-bold" : "")"
+                                   asp-controller="PojistnaUdalost" asp-action="Index"
+                                   aria-current="@((currentController == "PojistnaUdalost" && currentAction == "Index") ? "page" : null)">
+                                    Události
+                                </a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Pojistenec"))
+                        {
+                            <li class="nav-item mx-1">
+                                <a class="nav-link text-light @((currentController == "PojistnaUdalost" && currentAction == "My") ? "active fw-bold" : "")"
+                                   asp-controller="PojistnaUdalost" asp-action="My"
+                                   aria-current="@((currentController == "PojistnaUdalost" && currentAction == "My") ? "page" : null)">
+                                    Moje události
+                                </a>
+                            </li>
+                        }
+
                         <li class="nav-item mx-1">
                             <a class="nav-link text-light @((currentController == "Home" && currentAction == "About") ? "active fw-bold" : "")"
                                asp-controller="Home" asp-action="About"

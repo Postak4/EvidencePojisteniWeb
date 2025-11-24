@@ -15,7 +15,7 @@ namespace EvidencePojisteniWeb.Data
             var userMgr = services.GetRequiredService<UserManager<ApplicationUser>>();
 
             // vytvoř všechny potřebné role
-            string[] roles = new[] { "Admin", "Pojištěnec" };
+            string[] roles = new[] { "Admin", "Pojistenec" };
             foreach (var role in roles)
             {
                 // Kontrola, zda role již existuje

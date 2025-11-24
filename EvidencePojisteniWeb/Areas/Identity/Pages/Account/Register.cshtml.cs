@@ -139,6 +139,9 @@ namespace EvidencePojisteniWeb.Areas.Identity.Pages.Account
                 user.PojistenecModelId = pojistenec.Id;
                 await _userManager.UpdateAsync(user);
 
+                // Přiřazení role Pojistenec
+                await _userManager.AddToRoleAsync(user, "Pojistenec");
+
                 // … zbytek potvrzení e‑mailu a přihlášení …
 
 
