@@ -2,6 +2,7 @@
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
+@inject IWebHostEnvironment Env
 
 <!DOCTYPE html>
 <html lang="cs-CZ">
@@ -108,6 +109,40 @@
             </p>
         </div>
     </footer>
+
+    @*LIŠTA PRO POZNÁMKY:
+
+        Koncept řešení
+        - HTML: skrytý <div> v _Layout.cshtml
+        - CSS: position: fixed, transform
+        - JS: toggle funkce
+        - Razor: zobrazit jen adminovi + jen v Development
+    *@
+    @if (Env.IsDevelopment() && User.IsInRole("Admin"))
+    {
+        <div id="devTasksDrawer" class="dev-drawer">
+            <div class="dev-drawer-header">
+                <strong>📌 Úkoly k dodělání</strong>
+                <button type="button" class="btn-close" onclick="toggleDevDrawer()"></button>
+            </div>
+
+            <textarea id="devTasks"
+                  class="form-control mt-2"
+                  rows="12"
+                  placeholder="- Doplnit validace&#10;- Refaktorovat partial views&#10;- Přidat soft delete">
+        </textarea>
+
+            <small class="text-muted mt-2 d-block">
+                Jen pro vývoj (uloženo v LocalStorage)
+            </small>
+        </div>
+
+        <button id="devDrawerToggle"
+                class="btn btn-dark dev-drawer-toggle"
+                onclick="toggleDevDrawer()">
+            🛠
+        </button>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

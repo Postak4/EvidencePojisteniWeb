@@ -71,3 +71,36 @@ footer {
     border-bottom: 2px solid #0d6efd;
     color: yellowgreen !important;
 }
+
+/* Styl lišty pro poznámky - všechno pod */
+.dev-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100%;
+    background: #f8f9fa;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+    padding: 1rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1050;
+}
+
+    .dev-drawer.open {
+        transform: translateX(0);
+    }
+
+.dev-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dev-drawer-toggle {
+    position: fixed;
+    top: 40%;
+    right: 0;
+    border-radius: 0 0 0 6px;
+    z-index: 1049;
+}
