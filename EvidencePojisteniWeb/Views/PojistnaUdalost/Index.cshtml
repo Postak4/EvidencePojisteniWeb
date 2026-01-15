@@ -84,7 +84,8 @@
         }
     }
 
-    @* 
+    @*
+        Pro admina
         (Dočasná diagnostika – klidně na chvíli přidej nad tabulky) 
         Pokud tady uvidíš nuly, víme, že v controlleru se seznamy prázdní (typicky kvůli filtrům/NULLům).
         Pokud jsou nenulové a tabulka nic nezobrazuje, je problém ve view (např. jiný model/partial).
@@ -94,8 +95,6 @@
         StatsByInsuranceType: @(Model.StatsByInsuranceType?.Count() ?? 0),
         SumByInsuranceType: @(Model.SumByInsuranceType?.Count() ?? 0)
     </p>
-
-
 
     <div class="row">
         <div class="col-md-4">

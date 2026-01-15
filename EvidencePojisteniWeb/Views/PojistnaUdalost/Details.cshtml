@@ -1,72 +1,97 @@
 ﻿@model EvidencePojisteniWeb.Models.PojistnaUdalostModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detail pojistné události";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <!-- HLAVIČKA -->
+    <header class="p-2 border-bottom shadow-lg rounded-3 mb-4">
+        <h4 class="mb-0 text-body-emphasis">
+            @ViewData["Title"]
+        </h4>
+    </header>
 
-<div>
-    <h4>PojistnaUdalostModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PopisUdalosti)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PopisUdalosti)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DatumUdalosti)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DatumUdalosti)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MistoUdalosti)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MistoUdalosti)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Skoda)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Skoda)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Vyreseno)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Vyreseno)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Svedek)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Svedek)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdresaSvedka)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdresaSvedka)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Poznamka)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Poznamka)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Pojisteni)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Pojisteni.PredmetPojisteni)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <!-- KARTA -->
+    <div class="card shadow">
+        <div class="card-body bg-success text-white rounded-3">
+
+            <!-- ZÁKLADNÍ ÚDAJE -->
+            <h5 class="mb-3 border-bottom pb-1">Základní údaje o události</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <strong>@Html.DisplayNameFor(m => m.PopisUdalosti)</strong>
+                    <div>@Html.DisplayFor(m => m.PopisUdalosti)</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>@Html.DisplayNameFor(m => m.DatumUdalosti)</strong>
+                    <div>@Html.DisplayFor(m => m.DatumUdalosti)</div>
+                </div>
+            </div>
+
+            <!-- MÍSTO A ŠKODA -->
+            <h5 class="mt-3 mb-3 border-bottom pb-1">Místo a škoda</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>@Html.DisplayNameFor(m => m.MistoUdalosti)</strong>
+                    <div>@Html.DisplayFor(m => m.MistoUdalosti)</div>
+                </div>
+                <div class="col-md-3">
+                    <strong>@Html.DisplayNameFor(m => m.Skoda)</strong>
+                    <div>@Html.DisplayFor(m => m.Skoda)</div>
+                </div>
+                <div class="col-md-3">
+                    <strong>@Html.DisplayNameFor(m => m.Vyreseno)</strong>
+                    <div>
+                        @(Model.Vyreseno ? "Ano" : "Ne")
+                    </div>
+                </div>
+            </div>
+
+            <!-- SVĚDEK -->
+            <h5 class="mt-3 mb-3 border-bottom pb-1">Svědek</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>@Html.DisplayNameFor(m => m.Svedek)</strong>
+                    <div>@Html.DisplayFor(m => m.Svedek)</div>
+                </div>
+                <div class="col-md-8">
+                    <strong>@Html.DisplayNameFor(m => m.AdresaSvedka)</strong>
+                    <div>@Html.DisplayFor(m => m.AdresaSvedka)</div>
+                </div>
+            </div>
+
+            <!-- POJIŠTĚNÍ A POZNÁMKY -->
+            <h5 class="mt-3 mb-3 border-bottom pb-1">Pojištění a poznámky</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>Typ pojištění</strong>
+                    <div>@Model.Pojisteni?.PredmetPojisteni</div>
+                </div>
+                <div class="col-md-6">
+                    <strong>@Html.DisplayNameFor(m => m.Poznamka)</strong>
+                    <div>@Html.DisplayFor(m => m.Poznamka)</div>
+                </div>
+            </div>
+
+            <!-- TLAČÍTKA -->
+            <div class="mt-4 text-center">
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-outline-light px-4 me-2">
+                    Upravit
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Zpět na přehled
+        </a>
+    </div>
 </div>
